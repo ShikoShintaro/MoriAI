@@ -58,7 +58,5 @@ fun RegisterScreen(navController: NavController) {
         }) {
             Text("Already have an account?")
         }
-
-
     }
 }
