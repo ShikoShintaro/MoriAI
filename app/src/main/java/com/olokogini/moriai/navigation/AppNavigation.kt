@@ -44,7 +44,7 @@ fun AppNavigation() {
             LoginScreen(
                 onLogin = { navController.navigate("chat") },
                 onRegister = { navController.navigate("register") },
-                onForgot = { } //disabled
+                onForgot = {  navController.navigate("forgot_password") } //disabled
             )
         }
 
