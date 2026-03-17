@@ -29,7 +29,7 @@ fun RegisterScreen(navController: NavController) {
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
-            label = { Text("username") }
+            label = { Text("Username") }
         )
 
         OutlinedTextField(
