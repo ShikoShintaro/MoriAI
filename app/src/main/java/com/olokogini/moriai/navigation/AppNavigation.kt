@@ -4,8 +4,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.*
 import com.olokogini.moriai.data.AppPreferences
+
 import com.olokogini.moriai.ui.intro.IntroScreen
 import com.olokogini.moriai.ui.login.LoginScreen
+import com.olokogini.moriai.ui.register.RegisterScreen
+import com.olokogini.moriai.ui.forgotpassword.ForgotPasswordScreen
+
 import kotlinx.coroutines.launch
 
 @Composable
@@ -43,5 +47,14 @@ fun AppNavigation() {
                 onForgot = { } //disabled
             )
         }
+
+        composable("register") {
+            RegisterScreen(navController)
+        }
+
+        composable("forgot_password") {
+            ForgotPasswordScreen(navController)
+        }
+
     }
 }
