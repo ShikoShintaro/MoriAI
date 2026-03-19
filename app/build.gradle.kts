@@ -40,6 +40,8 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.converter.gson)
     implementation(libs.material.v1120)
 
     implementation(libs.androidx.core.ktx)

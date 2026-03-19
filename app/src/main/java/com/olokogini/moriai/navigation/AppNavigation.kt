@@ -20,11 +20,15 @@ fun AppNavigation() {
     val prefs = AppPreferences(context)
     val scope = rememberCoroutineScope()
 
-    val firstLaunch by prefs.isFirstLaunch.collectAsState(initial = true)
+    val firstLaunch by prefs.isFirstLaunch.collectAsState(initial = null)
+
+    if (firstLaunch == null ) {
+        return
+    }
 
     NavHost(
         navController = navController,
-        startDestination = if (firstLaunch) "intro" else "login"
+        startDestination = if (firstLaunch == true ) "intro" else "login"
     ) {
 
         composable("intro") {

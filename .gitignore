@@ -1,5 +1,8 @@
+## ANDROID
+
 *.iml
 .gradle
+/app/build
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -14,4 +17,10 @@
 .cxx
 local.properties
 .env
+
+# SERVER
+
+/server/package-lock.json
+/server/package.json
 /server/node_modules
+/server/.env

@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.*
 import androidx.compose.material3.*
 import androidx.compose.ui.text.input.*
+import com.olokogini.moriai.api.RegisterRequest
+import com.olokogini.moriai.api.RetroFitClient
+import kotlinx.coroutines.*
 
 @Composable
 fun RegisterScreen(navController: NavController) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -48,7 +52,22 @@ fun RegisterScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(onClick = {
-            // MAKING THIS ONE SOON
+            scope.launch {
+                try {
+                    val response = RetroFitClient.api.register(
+                        RegisterRequest(username, email, password)
+                    )
+
+                    if (response.isSuccessful) {
+                        println("Success ${response.body()?.message}")
+                        navController.navigate("login")
+                    } else {
+                        println("Error : ${response.errorBody()?.string()}")
+                    }
+                } catch(e: Exception) {
+                    println("EXCEPTION ERROR : ${e.message}")
+                }
+            }
         }) {
             Text("Register")
         }

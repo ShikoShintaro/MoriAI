@@ -2,6 +2,8 @@
 activityCompose = "1.13.0"
 agp = "9.1.0"
 composeBom = "2026.03.00"
+converterGson = "3.0.0"
+converterGsonVersion = "2.9.0"
 coreKtx = "1.18.0"
 datastorePreferences = "1.2.1"
 datastorePreferencesVersion = "1.1.1"
@@ -12,6 +14,7 @@ appcompat = "1.7.1"
 material = "1.13.0"
 materialVersion = "1.12.0"
 navigationCompose = "2.9.7"
+retrofir = "2.9.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -24,12 +27,15 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences-v111 = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+converter-gson-v290 = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGsonVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material-v1120 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+retrofir = { module = "com.squareup.retrofir2:retrofir", version.ref = "retrofir" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
