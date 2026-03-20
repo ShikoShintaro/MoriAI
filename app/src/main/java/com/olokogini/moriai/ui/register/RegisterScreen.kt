@@ -60,7 +60,7 @@ fun RegisterScreen(navController: NavController) {
 
                     if (response.isSuccessful) {
                         println("Success ${response.body()?.message}")
-                        navController.navigate("login")
+                        navController.navigate("otp")
                     } else {
                         println("Error : ${response.errorBody()?.string()}")
                     }

@@ -9,6 +9,8 @@ import com.olokogini.moriai.ui.intro.IntroScreen
 import com.olokogini.moriai.ui.login.LoginScreen
 import com.olokogini.moriai.ui.register.RegisterScreen
 import com.olokogini.moriai.ui.forgotpassword.ForgotPasswordScreen
+import com.olokogini.moriai.ui.otp.OtpScreen
+import com.olokogini.moriai.ui.student.StudentInfoScreen
 
 import kotlinx.coroutines.launch
 
@@ -58,6 +60,14 @@ fun AppNavigation() {
 
         composable("forgot_password") {
             ForgotPasswordScreen(navController)
+        }
+
+        composable("otp") {
+            OtpScreen(navController)
+        }
+
+        composable("student-info") {
+            StudentInfoScreen(navController)
         }
 
     }

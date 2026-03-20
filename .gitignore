@@ -1,6 +1,7 @@
 ## ANDROID
 
 *.iml
+.idea
 .gradle
 /app/build
 /local.properties
