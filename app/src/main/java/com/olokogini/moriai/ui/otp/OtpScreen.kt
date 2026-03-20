@@ -4,12 +4,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.olokogini.moriai.api.RetroFitClient
+import com.olokogini.moriai.api.VerifyRequest
+import kotlinx.coroutines.launch
 
 @Composable
-fun OtpScreen( navController: NavController) {
+fun OtpScreen(navController: NavController, email: String) {
     var code by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -21,10 +26,38 @@ fun OtpScreen( navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        OutlinedTextField(
+            value = code,
+            onValueChange = {
+                if (it.length <= 6) code = it
+            },
+            label = { Text("6-Digit code") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer( modifier = Modifier.height(20.dp))
+
         Button(
             onClick = {
-                // TEMP : skip validation
-                navController.navigate("student-info")
+                scope.launch {
+                    try {
+                        val response = RetroFitClient.api.verify(
+                            VerifyRequest(email, code)
+                        )
+
+                        if (response.isSuccessful) {
+                            println("Verified")
+
+                            navController.navigate("student_info") {
+                                popUpTo("otp/$email") { inclusive = true }
+                            }
+                        } else {
+                            error = "Invalid code or expired"
+                        }
+                    } catch (e: Exception) {
+                        error = "Network error : ${e.message}"
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {

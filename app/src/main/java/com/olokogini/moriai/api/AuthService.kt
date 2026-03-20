@@ -10,11 +10,21 @@ data class RegisterRequest(
     val password: String
 )
 
+data class VerifyRequest (
+    val email : String,
+    val code : String
+)
+
 data class ApiResponse(
     val message: String
 )
 
 interface AuthService{
+
+    @POST("auth/verify")
+    suspend fun verify(
+        @Body request: VerifyRequest
+    ): Response<ApiResponse>
 
     @POST("auth/register")
     suspend fun register(
