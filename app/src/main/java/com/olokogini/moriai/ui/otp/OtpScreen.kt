@@ -42,7 +42,7 @@ fun OtpScreen(navController: NavController, email: String) {
                 scope.launch {
                     try {
                         val response = RetroFitClient.api.verify(
-                            VerifyRequest(email, code)
+                            VerifyRequest(email, code.trim())
                         )
 
                         if (response.isSuccessful) {
@@ -52,6 +52,8 @@ fun OtpScreen(navController: NavController, email: String) {
                                 popUpTo("otp/$email") { inclusive = true }
                             }
                         } else {
+                            println("ERROR CODE: ${response.code()}")
+                            println("ERROR BODY: ${response.errorBody()?.string()}")
                             error = "Invalid code or expired"
                         }
                     } catch (e: Exception) {
