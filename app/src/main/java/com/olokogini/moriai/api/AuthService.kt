@@ -15,6 +15,20 @@ data class VerifyRequest (
     val code : String
 )
 
+data class ForgotPasswordRequest (
+    val email: String
+)
+
+data class verifyResetRequest (
+    val email: String,
+    val code : String
+)
+
+data class resetPasswordRequest (
+    val email : String,
+    val newPassword : String
+)
+
 data class ApiResponse(
     val message: String
 )
@@ -29,5 +43,20 @@ interface AuthService{
     @POST("auth/register")
     suspend fun register(
         @Body request: RegisterRequest
+    ): Response<ApiResponse>
+
+    @POST("auth/forgot-password")
+    suspend fun forgotPassword(
+        @Body request: ForgotPasswordRequest
+    ): Response<ApiResponse>
+
+    @POST("auth/verify-reset")
+    suspend fun verifyResetOtp(
+        @Body request: verifyResetRequest
+    ): Response<ApiResponse>
+
+    @POST("auth/reset-password")
+    suspend fun resetPassword (
+        @Body request: resetPasswordRequest
     ): Response<ApiResponse>
 }
