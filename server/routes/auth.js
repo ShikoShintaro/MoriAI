@@ -133,4 +133,33 @@ router.post("/verify-reset", async (req, res) => {
     }
 })
 
+router.post("/reset-password", async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+
+        if (!newPassword) {
+            return res.status(400).json({ message : "Password required"});
+        }
+
+        const user = await User.findOne({ email })
+
+        if (!user) { 
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+        user.resetOtp = null;
+        user.resetOtpExpires = null;
+
+        await user.save();
+
+        return res.json({ message : "Password reset successful "});
+
+    } catch (err) {
+        return res.status(500).json({ error : err.message });
+    }
+});
+
 module.exports = router;
