@@ -79,7 +79,7 @@ router.post("/verify", async (req, res) => {
     }
 })
 
-router.post("forgot-password", async (req, res) => {
+router.post("/forgot-password", async (req, res) => {
     try {
         const { email } = req.body;
 
