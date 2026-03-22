@@ -9,6 +9,7 @@ import com.olokogini.moriai.ui.intro.IntroScreen
 import com.olokogini.moriai.ui.login.LoginScreen
 import com.olokogini.moriai.ui.register.RegisterScreen
 import com.olokogini.moriai.ui.forgotpassword.ForgotPasswordScreen
+import com.olokogini.moriai.ui.forgotpassword.ResetPasswordScreen
 import com.olokogini.moriai.ui.otp.OtpScreen
 import com.olokogini.moriai.ui.otp.ResetOtpScreen
 import com.olokogini.moriai.ui.student.StudentInfoScreen
@@ -77,7 +78,10 @@ fun AppNavigation() {
             ResetOtpScreen(navController, email)
         }
 
-        
+        composable("reset_password/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            ResetPasswordScreen(navController, email)
+        }
 
     }
 }
