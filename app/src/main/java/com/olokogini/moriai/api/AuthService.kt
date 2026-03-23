@@ -29,9 +29,20 @@ data class resetPasswordRequest (
     val newPassword : String
 )
 
+data class StudentInfoRequest (
+    val email : String,
+    val fullName : String,
+    val course : String,
+    val birthdate : String,
+    val section : String,
+    val year : String
+)
+
 data class ApiResponse(
     val message: String
 )
+
+
 
 interface AuthService{
 
@@ -58,5 +69,10 @@ interface AuthService{
     @POST("auth/reset-password")
     suspend fun resetPassword (
         @Body request: resetPasswordRequest
+    ): Response<ApiResponse>
+
+    @POST("auth/student-info")
+    suspend fun submitStudentInfo(
+        @Body request: StudentInfoRequest
     ): Response<ApiResponse>
 }
