@@ -162,4 +162,32 @@ router.post("/reset-password", async (req, res) => {
     }
 });
 
+router.post("/student-info", async (req, res) => {
+    try {
+        const { email, fullName, course, birthdate, section , year} = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message : "Email required" });
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message : "User not found"})
+        }
+
+        user.fullName = fullName;
+        user.course = course;
+        user.birthdate = birthdate;
+        user.section = section;
+        user.year = year;
+
+        await user.save();
+
+        return res.json({ message : "Student info updated successfully" });
+    } catch (err) {
+        return res.status(500).json({ error : err.message });
+    }
+})
+
 module.exports = router;
