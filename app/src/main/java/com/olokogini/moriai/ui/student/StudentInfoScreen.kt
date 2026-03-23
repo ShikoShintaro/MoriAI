@@ -4,16 +4,23 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
+import com.olokogini.moriai.api.RetroFitClient
+import com.olokogini.moriai.api.StudentInfoRequest
 
 @Composable
-fun StudentInfoScreen(navController: NavController) {
+fun StudentInfoScreen(navController: NavController, email: String) {
     var name by remember { mutableStateOf("") }
     var course by remember { mutableStateOf("") }
     var birthdate by remember { mutableStateOf("") }
     var section by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
+
+    var message by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -42,13 +49,37 @@ fun StudentInfoScreen(navController: NavController) {
 
         Button(
             onClick = {
-                //temp
-                navController.navigate("login")
+                scope.launch {
+                    try {
+                        val response = RetroFitClient.api.submitStudentInfo(
+                            StudentInfoRequest(
+                                email = email,
+                                fullName = name,
+                                course = course,
+                                birthdate = birthdate,
+                                section = section,
+                                year = year
+                            )
+                        )
+                        if (response.isSuccessful) {
+                            message = "Saved Sucessfully"
+                            navController.navigate("login")
+                        } else {
+                            message = "Failed to save"
+                        }
+                    } catch (e: Exception) {
+                        message = "Error : ${e.message}"
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Submit")
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(message)
 
     }
 }
