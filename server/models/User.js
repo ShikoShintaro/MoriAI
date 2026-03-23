@@ -24,6 +24,32 @@ const UserSchema = new mongoose.Schema({
         type : Date
     }
 
+    fullName : {
+        type : String,
+        required : true
+    }
+
+    course : {
+        type : String,
+        required : true
+    }
+
+    birthdate : {
+        type : String,
+        required : true
+    }
+
+    section : {
+        type : String,
+        required : true
+    }
+
+    year : {
+        type : String
+        required : true
+    }
+
+
 
 });
 
