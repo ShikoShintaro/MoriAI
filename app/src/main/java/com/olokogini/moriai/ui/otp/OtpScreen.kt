@@ -48,7 +48,7 @@ fun OtpScreen(navController: NavController, email: String) {
                         if (response.isSuccessful) {
                             println("Verified")
 
-                            navController.navigate("student_info") {
+                            navController.navigate("student_info/$email") {
                                 popUpTo("otp/$email") { inclusive = true }
                             }
                         } else {
