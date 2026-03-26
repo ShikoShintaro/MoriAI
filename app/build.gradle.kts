@@ -41,6 +41,8 @@ android {
 
 dependencies {
 
+    implementation(libs.logging.interceptor)
+
     implementation(libs.converter.gson)
     implementation(libs.material.v1120)
 
