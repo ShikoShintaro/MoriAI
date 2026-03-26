@@ -6,16 +6,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
+import com.olokogini.moriai.api.LoginRequest
+import com.olokogini.moriai.api.RetroFitClient
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
-    onLogin: () -> Unit,
+    onLoginSuccess: () -> Unit,
     onRegister: () -> Unit,
     onForgot: () -> Unit
 ) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -49,14 +55,37 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    onLogin()
+                scope.launch {
+                    try {
+
+                        val response = RetroFitClient.api.login(
+                            LoginRequest(
+                                email = email.trim(),
+                                password = password.trim()
+                            )
+                        )
+
+                        if (response.isSuccessful) {
+                            message = "Login success"
+
+                            onLoginSuccess()
+                        } else {
+                            message = response.errorBody()?.string() ?: "Login Failed"
+                        }
+
+                    } catch (e: Exception) {
+                        message = "Error : ${e.message}"
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(message)
 
         TextButton(onClick = onForgot) {
             Text("Forgot Password?")
