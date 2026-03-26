@@ -69,7 +69,7 @@ fun AppNavigation() {
             OtpScreen(navController, email)
         }
 
-        composable("student_info") { backStackEntry ->
+        composable("student_info/{email}") { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email") ?: ""
             StudentInfoScreen(navController, email)
         }
