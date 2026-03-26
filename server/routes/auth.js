@@ -47,7 +47,11 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const email = req.body?.email?.trim();
+        const password = req.body?.password?.trim();
+
+        console.log("Email: ", email);
+        console.log("Password ", password);
         
         if (!email || !password) {
             return res.status(400).json({ message: "All fields required!" });
@@ -59,7 +63,7 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "User not found" });
         }
 
-        const isMatch = await bcrypt.compare(password. user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         
         if (!isMatch) {
             return res.status(400).json({ message : "Invalid Credentials" });
