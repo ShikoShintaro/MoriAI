@@ -43,6 +43,37 @@ router.post("/register", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ error : err.message });
     }
+});
+
+router.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ message: "All fields required!" });
+        } 
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password. user.password);
+        
+        if (!isMatch) {
+            return res.status(400).json({ message : "Invalid Credentials" });
+        }
+
+        if (!user.verified) {
+            return res.status(400).json({ message : "Account not verified" });
+        }
+
+        return res.json({ message : "Login Success", email: user.email });
+        
+    } catch (err) {
+        return res.status(500).json({ error : err.message });
+    }
 })
 
 router.post("/verify", async (req, res) => {
@@ -77,7 +108,7 @@ router.post("/verify", async (req, res) => {
     } catch (err) {
         return res.status(500).json({error: err.message});
     }
-})
+});
 
 router.post("/forgot-password", async (req, res) => {
     try {
@@ -131,7 +162,7 @@ router.post("/verify-reset", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ error: err.message })
     }
-})
+});
 
 router.post("/reset-password", async (req, res) => {
     try {
@@ -188,6 +219,6 @@ router.post("/student-info", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ error : err.message });
     }
-})
+});
 
 module.exports = router;
