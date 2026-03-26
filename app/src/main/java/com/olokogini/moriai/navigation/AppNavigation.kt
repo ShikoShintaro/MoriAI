@@ -1,9 +1,11 @@
 package com.olokogini.moriai.navigation
 
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.*
 import com.olokogini.moriai.data.AppPreferences
+import com.olokogini.moriai.ui.chat.ChatScreen
 
 import com.olokogini.moriai.ui.intro.IntroScreen
 import com.olokogini.moriai.ui.login.LoginScreen
@@ -50,10 +52,18 @@ fun AppNavigation() {
 
         composable("login") {
             LoginScreen(
-                onLogin = { navController.navigate("chat") },
+                onLoginSuccess = {
+                    navController.navigate("chat") {
+                        popUpTo("login") {inclusive = true }
+                    }
+                },
                 onRegister = { navController.navigate("register") },
                 onForgot = {  navController.navigate("forgot_password") } //disabled
             )
+        }
+
+        composable ("chat"){
+            ChatScreen()
         }
 
         composable("register") {
