@@ -4,6 +4,10 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+data class LoginRequest(
+    val email : String,
+    val password : String
+)
 data class RegisterRequest(
     val username: String,
     val email: String,
@@ -45,6 +49,11 @@ data class ApiResponse(
 
 
 interface AuthService{
+
+    @POST("auth/login")
+    suspend fun login(
+        @Body request : LoginRequest
+    ): Response<ApiResponse>
 
     @POST("auth/verify")
     suspend fun verify(
