@@ -1,4 +1,4 @@
-package com.olokogini.moriai.ui.chat
+package com.olokogini.moriai.ui.main.chat
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
