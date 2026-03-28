@@ -4,13 +4,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.*
 import com.olokogini.moriai.data.AppPreferences
-import com.olokogini.moriai.ui.main.chat.ChatScreen
-
 import com.olokogini.moriai.ui.intro.IntroScreen
 import com.olokogini.moriai.ui.login.LoginScreen
 import com.olokogini.moriai.ui.register.RegisterScreen
 import com.olokogini.moriai.ui.forgotpassword.ForgotPasswordScreen
 import com.olokogini.moriai.ui.forgotpassword.ResetPasswordScreen
+import com.olokogini.moriai.ui.main.MainScreen
 import com.olokogini.moriai.ui.otp.OtpScreen
 import com.olokogini.moriai.ui.otp.ResetOtpScreen
 import com.olokogini.moriai.ui.student.StudentInfoScreen
@@ -62,7 +61,7 @@ fun AppNavigation() {
         }
 
         composable ("chat"){
-            ChatScreen()
+            MainScreen(navController)
         }
 
         composable("register") {
