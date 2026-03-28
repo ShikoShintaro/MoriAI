@@ -225,4 +225,43 @@ router.post("/student-info", async (req, res) => {
     }
 });
 
+router.post("/update-profile-image", async (req, res) => {
+    try {
+        const { email, imageUrl } = req.body;
+        
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message : "User not found" });
+        }
+
+        user.profileImage = imageUrl;
+        await user.save();
+
+        res.json(({ message : "Profile image updated" }));
+
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+});
+
+router.post("/get-profile", async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await user.findOne({ email });
+
+        if (!user) {
+            return res.status(500).json({ message : "User not found" });
+        }
+
+        res.json({
+            imageUrl : user.profileImage || ""
+        });
+
+    } catch (err) {
+        res.status(500).json({ error : err.message });
+    }
+})
+
 module.exports = router;
