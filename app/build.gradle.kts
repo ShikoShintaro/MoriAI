@@ -42,29 +42,21 @@ android {
 dependencies {
 
     implementation(libs.logging.interceptor)
-
     implementation(libs.converter.gson)
     implementation(libs.material.v1120)
-
     implementation(libs.androidx.core.ktx)
-
     implementation(platform(libs.androidx.compose.bom))
-
     implementation(libs.androidx.activity.compose)
-
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.datastore.preferences)
-
     implementation(libs.androidx.datastore.preferences.v111)
-
     implementation(libs.androidx.navigation.compose)
-
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
     testImplementation(libs.junit)
-
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

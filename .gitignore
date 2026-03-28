@@ -1,8 +1,8 @@
 ## ANDROID
-
 *.iml
-.idea
-.gradle
+.idea/misc.xml
+.idea/
+.gradle/
 /app/build
 /local.properties
 /.idea/caches
@@ -20,8 +20,5 @@ local.properties
 .env
 
 # SERVER
-
-/server/package-lock.json
-/server/package.json
-/server/node_modules
+/server/node_modules/
 /server/.env

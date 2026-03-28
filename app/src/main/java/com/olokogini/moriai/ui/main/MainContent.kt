@@ -4,11 +4,13 @@ import androidx.compose.runtime.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.olokogini.moriai.ui.main.chat.ChatScreen
+import com.olokogini.moriai.ui.main.profile.ProfileScreen
+import com.olokogini.moriai.ui.main.settings.SettingsScreen
+
+
 
 @Composable
-fun MainContent(navController: NavController) {
-
-    val innerNavController = rememberNavController()
+fun MainContent(innerNavController: NavHostController) {
 
     NavHost(
         navController = innerNavController,
@@ -17,7 +19,11 @@ fun MainContent(navController: NavController) {
         composable("chat") {
             ChatScreen()
         }
-
-        compo
+        composable("profile") {
+            ProfileScreen()
+        }
+        composable("settings") {
+            SettingsScreen()
+        }
     }
 }

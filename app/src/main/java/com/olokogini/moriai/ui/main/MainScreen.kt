@@ -1,12 +1,15 @@
 package com.olokogini.moriai.ui.main
 
 import androidx.compose.material3.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.navigation.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 
@@ -14,6 +17,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen( navController: NavController) {
 
+    val innerNavController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -30,7 +34,7 @@ fun MainScreen( navController: NavController) {
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate("chat")
+                        innerNavController.navigate("chat")
                     }
                 )
 
@@ -39,7 +43,7 @@ fun MainScreen( navController: NavController) {
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate("profile")
+                        innerNavController.navigate("profile")
                     }
                 )
 
@@ -48,7 +52,7 @@ fun MainScreen( navController: NavController) {
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate("settings")
+                        innerNavController.navigate("settings")
                     }
                 )
             }
@@ -71,7 +75,7 @@ fun MainScreen( navController: NavController) {
             }
         ) { padding ->
             Box(modifier = Modifier.padding(padding)) {
-                MainContent(navController)
+                MainContent(innerNavController)
             }
         }
 
