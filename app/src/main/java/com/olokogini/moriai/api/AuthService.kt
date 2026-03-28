@@ -46,6 +46,18 @@ data class ApiResponse(
     val message: String
 )
 
+data class UpdateProfileRequest(
+    val email : String,
+    val imageUrl : String
+)
+
+data class GetProfileRequest(
+    val email : String
+)
+
+data class ProfileRespsonse(
+    val imageUrl: String
+)
 
 
 interface AuthService{
@@ -84,4 +96,15 @@ interface AuthService{
     suspend fun submitStudentInfo(
         @Body request: StudentInfoRequest
     ): Response<ApiResponse>
+
+    @POST("auth/update-profile-image")
+    suspend fun updateProfileImage(
+        @Body request : UpdateProfileRequest
+    ): Response<ApiResponse>
+
+    @POST("auth/get-profile")
+    suspend fun getProfile(
+        @Body request : GetProfileRequest
+    ): Response<ApiResponse>
+
 }
