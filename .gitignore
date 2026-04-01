@@ -23,3 +23,6 @@ local.properties
 # SERVER
 /server/node_modules/
 /server/.env
+/server/*
+/gradle/*
+/.vscode/settings.json
