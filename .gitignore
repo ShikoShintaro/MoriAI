@@ -1,5 +1,7 @@
 ## ANDROID
 *.iml
+/gradle.properties
+gradle-daemon-jvm.properties
 .idea/
 .gradle/
 /app/build

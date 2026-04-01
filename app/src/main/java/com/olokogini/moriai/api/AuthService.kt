@@ -3,6 +3,10 @@ package com.olokogini.moriai.api
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import okhttp3.MultipartBody
+import retrofit2.http.Multipart
+import retrofit2.http.Part
+import retrofit2.Call
 
 data class LoginRequest(
     val email : String,
@@ -43,7 +47,8 @@ data class StudentInfoRequest (
 )
 
 data class ApiResponse(
-    val message: String
+    val message: String,
+    val email: String? = null
 )
 
 data class UpdateProfileRequest(
@@ -55,7 +60,11 @@ data class GetProfileRequest(
     val email : String
 )
 
-data class ProfileRespsonse(
+data class ProfileResponse(
+    val imageUrl: String
+)
+
+data class UploadResponse(
     val imageUrl: String
 )
 
@@ -105,6 +114,12 @@ interface AuthService{
     @POST("auth/get-profile")
     suspend fun getProfile(
         @Body request : GetProfileRequest
-    ): Response<ApiResponse>
+    ): Response<ProfileResponse>
+
+    @Multipart
+    @POST("upload")
+    fun uploadImage(
+        @Part image: MultipartBody.Part
+    ): Call<UploadResponse>
 
 }

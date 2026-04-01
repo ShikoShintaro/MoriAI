@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Multipart;
+import retrofit2.http.Part;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,14 +59,20 @@ public class ProfileUploadHelper {
                         @Override
                         public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                callback.onSuccess(response.body().getImageUrl());
+                                String url = response.body().getImageUrl();
+
+                                Log.d("UPLOAD SUCCESS", "URL : " + url);
+
+                                callback.onSuccess(url);
                             } else {
-                                callback.onError("Upload failed");
+                                Log.e("UPLOAD_ERROR", "Response Failed: " + response.message());
+                                callback.onError("Upload Failed");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<UploadResponse> call, Throwable t) {
+                            Log.e("UPLOAD_FAIL", t.getMessage());
                             callback.onError(t.getMessage());
                         }
                     });

@@ -249,11 +249,16 @@ router.post("/get-profile", async (req, res) => {
     try {
         const { email } = req.body;
 
-        const user = await user.findOne({ email });
+        console.log("EMAIL:", email);
+
+        const user = await User.findOne({ email });
 
         if (!user) {
+            console.log("USER NOT FOUND")
             return res.status(500).json({ message : "User not found" });
         }
+
+        console.log("DB IMAGE:", user.profileImage);
 
         res.json({
             imageUrl : user.profileImage || ""

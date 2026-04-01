@@ -9,14 +9,16 @@ router.post("/", upload.single("image"), async (req, res) => {
     try {
         const result = await cloudinary.uploader.upload(req.file.path, {
             folder: "profileImages",
-            public_id : req.body.userId
         });
+
+        console.log("CLOUDINARY URL:", result.secure_url);
 
         res.json({
             imageUrl : result.secure_url
         });
 
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error : err.message });
     }
 });

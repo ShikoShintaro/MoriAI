@@ -11,11 +11,14 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
+import com.olokogini.moriai.api.GetProfileRequest
 
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.UpdateProfileRequest
 
 import kotlinx.coroutines.launch
+
+
 
 @Composable
 fun ProfileScreen() {
@@ -64,6 +67,28 @@ fun ProfileScreen() {
                     }
                 }
             )
+        }
+    }
+
+    LaunchedEffect(userEmail) {
+        if (userEmail.isNotEmpty()) {
+            try {
+                val response = RetroFitClient.api.getProfile(
+                    GetProfileRequest(userEmail)
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    val url = response.body()!!.imageUrl
+
+                    println("LOADED IMAGE URL: $url")
+
+                    imageUrl = url
+                } else {
+                    println("Failed to load profile")
+                }
+            } catch (e: Exception) {
+                println("Error loading profile : ${e.message}")
+            }
         }
     }
 

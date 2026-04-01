@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import retrofit2.Response
+import com.olokogini.moriai.api.ApiResponse
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import com.olokogini.moriai.api.LoginRequest
@@ -21,6 +25,7 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     Column(
@@ -58,14 +63,21 @@ fun LoginScreen(
                 scope.launch {
                     try {
 
-                        val response = RetroFitClient.api.login(
+                        val response : Response<ApiResponse> = RetroFitClient.api.login(
                             LoginRequest(
                                 email = email.trim(),
                                 password = password.trim()
                             )
                         )
 
-                        if (response.isSuccessful) {
+                        if (response.isSuccessful && response.body() != null) {
+                            val emailFromApi = response.body()?.email ?: ""
+
+                            val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                            prefs.edit().putString("email", emailFromApi).apply()
+
+                            println("SAVED EMAIL: $emailFromApi")
+
                             message = "Login success"
 
                             onLoginSuccess()
