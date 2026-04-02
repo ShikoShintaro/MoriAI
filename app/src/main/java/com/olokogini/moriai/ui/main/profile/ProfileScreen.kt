@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.*
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
@@ -110,13 +112,15 @@ fun ProfileScreen() {
 
         Text("Profile", style = MaterialTheme.typography.headlineMedium)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         if (imageUrl.isNotEmpty()) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier
+                    .size(140.dp)
+                    .clip(MaterialTheme.shapes.extraLarge)
             )
         } else {
             Text("No Image")
@@ -124,17 +128,26 @@ fun ProfileScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Name: $fullName")
+                Text("Course: $course")
+                Text("Section: $section")
+                Text("Year: $year")
+            }
 
-        Text("Name: $fullName")
-        Text("Course: $course")
-        Text("Section: $section")
-        Text("Year: $year")
+        }
+
+        Spacer (modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
                 launcher.launch("image/*")
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Change Profile Picture")
         }
