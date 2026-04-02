@@ -261,7 +261,13 @@ router.post("/get-profile", async (req, res) => {
         console.log("DB IMAGE:", user.profileImage);
 
         res.json({
-            imageUrl : user.profileImage || ""
+            imageUrl : user.profileImage || "",
+            fullName : user.fullName || "",
+            course : user.course || "",
+            year : user.year || "",
+            section : user.section || "",
+            birthdate : user.birthdate || "",
+            
         });
 
     } catch (err) {
