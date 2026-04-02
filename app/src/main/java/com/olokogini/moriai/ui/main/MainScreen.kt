@@ -9,6 +9,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.navigation.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
@@ -20,6 +21,9 @@ fun MainScreen( navController: NavController) {
     val innerNavController = rememberNavController()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    val navBackStackEntry = innerNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry.value?.destination?.route
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -61,7 +65,12 @@ fun MainScreen( navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Mori AI") },
+                    title = {
+                        when (currentRoute) {
+                            "chat" -> Text("Mori AI")
+                            else -> {}
+                        }
+                    },
                     navigationIcon = {
                         IconButton(
                             onClick = {
