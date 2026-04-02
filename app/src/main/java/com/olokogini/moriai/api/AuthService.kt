@@ -61,7 +61,12 @@ data class GetProfileRequest(
 )
 
 data class ProfileResponse(
-    val imageUrl: String
+    val imageUrl: String,
+    val fullName: String,
+    val course: String,
+    val section: String,
+    val year: String,
+    val birthdate: String
 )
 
 data class UploadResponse(
@@ -112,9 +117,9 @@ interface AuthService{
     ): Response<ApiResponse>
 
     @POST("auth/get-profile")
-    suspend fun getProfile(
+    fun getProfile(
         @Body request : GetProfileRequest
-    ): Response<ProfileResponse>
+    ): Call<ProfileResponse>
 
     @Multipart
     @POST("upload")
