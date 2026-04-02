@@ -34,6 +34,7 @@ fun ProfileScreen() {
 
     val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     val userEmail = prefs.getString("email", "") ?: ""
+    val hasLoaded = remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -74,29 +75,30 @@ fun ProfileScreen() {
         }
     }
 
-    LaunchedEffect(userEmail) {
-        if (userEmail.isNotEmpty()) {
+    if (userEmail.isNotEmpty() && !hasLoaded.value) {
+        hasLoaded.value = true
 
-            ProfileGetHelper.getProfile(
-                userEmail,
-                object : ProfileGetHelper.CallbackListener {
+        ProfileGetHelper.getProfile(
+            userEmail,
+            object : ProfileGetHelper.CallbackListener {
 
-                    override fun onSuccess(profile: ProfileResponse?) {
-                        if (profile != null) {
-                            imageUrl = profile.imageUrl
-                            fullName = profile.fullName
-                            course = profile.course
-                            section = profile.section
-                            year = profile.year
-                        }
-                    }
+                override fun onSuccess(profile: ProfileResponse?) {
+                    println("PROFILE RESPONSE: $profile") // DEBUG
 
-                    override fun onError(error: String) {
-                        println("Error: $error")
+                    if (profile != null) {
+                        imageUrl = profile.imageUrl ?: ""
+                        fullName = profile.fullName ?: ""
+                        course = profile.course ?: ""
+                        section = profile.section ?: ""
+                        year = profile.year ?: ""
                     }
                 }
-            )
-        }
+
+                override fun onError(error: String) {
+                    println("PROFILE ERROR: $error")
+                }
+            }
+        )
     }
 
     Column(
