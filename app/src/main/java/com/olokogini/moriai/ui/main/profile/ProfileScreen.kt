@@ -11,7 +11,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
-import com.olokogini.moriai.api.GetProfileRequest
+import com.olokogini.moriai.api.ProfileResponse
 
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.UpdateProfileRequest
@@ -27,6 +27,10 @@ fun ProfileScreen() {
     val scope = rememberCoroutineScope()
 
     var imageUrl by remember { mutableStateOf("") }
+    var fullName by remember { mutableStateOf("") }
+    var course by remember { mutableStateOf("") }
+    var section by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf("") }
 
     val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     val userEmail = prefs.getString("email", "") ?: ""
@@ -72,23 +76,26 @@ fun ProfileScreen() {
 
     LaunchedEffect(userEmail) {
         if (userEmail.isNotEmpty()) {
-            try {
-                val response = RetroFitClient.api.getProfile(
-                    GetProfileRequest(userEmail)
-                )
 
-                if (response.isSuccessful && response.body() != null) {
-                    val url = response.body()!!.imageUrl
+            ProfileGetHelper.getProfile(
+                userEmail,
+                object : ProfileGetHelper.CallbackListener {
 
-                    println("LOADED IMAGE URL: $url")
+                    override fun onSuccess(profile: ProfileResponse?) {
+                        if (profile != null) {
+                            imageUrl = profile.imageUrl
+                            fullName = profile.fullName
+                            course = profile.course
+                            section = profile.section
+                            year = profile.year
+                        }
+                    }
 
-                    imageUrl = url
-                } else {
-                    println("Failed to load profile")
+                    override fun onError(error: String) {
+                        println("Error: $error")
+                    }
                 }
-            } catch (e: Exception) {
-                println("Error loading profile : ${e.message}")
-            }
+            )
         }
     }
 
@@ -114,6 +121,13 @@ fun ProfileScreen() {
         }
 
         Spacer(modifier = Modifier.height(20.dp))
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text("Name: $fullName")
+        Text("Course: $course")
+        Text("Section: $section")
+        Text("Year: $year")
 
         Button(
             onClick = {
