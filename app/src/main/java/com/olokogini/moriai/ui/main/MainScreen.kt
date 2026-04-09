@@ -99,7 +99,7 @@ fun MainScreen( navController: NavController) {
                     },
                     navigationIcon = {
                         IconButton(
-                            onClick = {
+                    onClick = {
                                 scope.launch { drawerState.open() }
                             }
                         ) {
