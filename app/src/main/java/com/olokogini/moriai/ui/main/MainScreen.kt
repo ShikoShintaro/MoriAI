@@ -1,6 +1,7 @@
 package com.olokogini.moriai.ui.main
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
@@ -91,35 +92,51 @@ fun MainScreen(navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(16.dp)
                     ) {
-                        // Profile image
-                        Surface(
-                            shape = MaterialTheme.shapes.extraLarge,
-                            modifier = Modifier.size(50.dp),
-                            tonalElevation = 2.dp
+
+                        // SETTINGS ICON (LEFT SIDE)
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    scope.launch { drawerState.close() }
+                                    innerNavController.navigate("settings")
+                                }
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        // PROFILE SECTION (IMAGE + TEXT)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    scope.launch { drawerState.close() }
+                                    innerNavController.navigate("profile")
+                                }
                         ) {
-                            if (profileImageUrl.isNotEmpty()) {
+
+                            Surface(
+                                shape = MaterialTheme.shapes.extraLarge,
+                                modifier = Modifier.size(50.dp)
+                            ) {
                                 AsyncImage(
                                     model = profileImageUrl,
                                     contentDescription = null,
                                     modifier = Modifier.size(50.dp)
                                 )
-                            } else {
-                                Box(
-                                    modifier = Modifier.size(50.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text("No Image", style = MaterialTheme.typography.bodySmall)
-                                }
                             }
-                        }
 
-                        Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(12.dp))
 
-                        Column {
-                            Text(profileName, style = MaterialTheme.typography.bodyLarge)
-                            Text(profileEmail, style = MaterialTheme.typography.bodySmall)
+                            Column {
+                                Text(profileName, style = MaterialTheme.typography.bodyLarge)
+                                Text(profileEmail, style = MaterialTheme.typography.bodySmall)
+                            }
                         }
                     }
 
@@ -141,14 +158,16 @@ fun MainScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     NavigationDrawerItem(
-                        label = { Text("Settings") },
-                        selected = currentRoute?.startsWith("settings") == true,
+                        label = { Text("Events & Schedule") },
+                        selected = currentRoute == "events",
                         onClick = {
                             scope.launch { drawerState.close() }
-                            innerNavController.navigate("settings")
+                            innerNavController.navigate("events")
                         },
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
