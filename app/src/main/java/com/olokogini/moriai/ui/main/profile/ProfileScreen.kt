@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
 import com.olokogini.moriai.api.ProfileResponse
+import androidx.compose.foundation.background
 
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.UpdateProfileRequest
@@ -104,52 +105,118 @@ fun ProfileScreen() {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
     ) {
 
-        Text("Profile", style = MaterialTheme.typography.headlineMedium)
+        // Cover + Profile Picture
+        Box {
 
-        Spacer(modifier = Modifier.height(24.dp))
+            // Cover
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .background(MaterialTheme.colorScheme.primary)
+            )
 
-        if (imageUrl.isNotEmpty()) {
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = null,
+            // Profile Image (overlapping)
+            Box(
                 modifier = Modifier
                     .size(140.dp)
-                    .clip(MaterialTheme.shapes.extraLarge)
+                    .align(Alignment.BottomCenter)
+                    .offset(y = 70.dp)
+            ) {
+                Surface(
+                    shape = MaterialTheme.shapes.extraLarge,
+                    border = ButtonDefaults.outlinedButtonBorder,
+                    tonalElevation = 4.dp
+                ) {
+                    if (imageUrl.isNotEmpty()) {
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(140.dp)
+                                .clip(MaterialTheme.shapes.extraLarge)
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier.size(140.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No Image")
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(80.dp))
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = fullName,
+                style = MaterialTheme.typography.headlineSmall
             )
-        } else {
-            Text("No Image")
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "$course • $section • $year",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            Button(
+                onClick = { launcher.launch("image/*") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Change Photo")
+            }
+
+            OutlinedButton(
+                onClick = { /* future edit profile */ },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Edit Profile")
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
+
+                Text(
+                    "Profile Info",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Text("Name: $fullName")
                 Text("Course: $course")
                 Text("Section: $section")
                 Text("Year: $year")
             }
-
-        }
-
-        Spacer (modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                launcher.launch("image/*")
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Change Profile Picture")
         }
     }
 }
