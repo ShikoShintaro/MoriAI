@@ -12,15 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.olokogini.moriai.ui.main.chat.ChatBubble
+import com.olokogini.moriai.ui.main.chat.viewmodel.ChatViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen() {
-    var input by remember { mutableStateOf("") }
-    val messages = remember { mutableStateListOf<ChatMessage>() }
+fun ChatScreen(viewModel: ChatViewModel) {
 
-    Column (
+    val messages by viewModel.messages.collectAsState(initial = emptyList())
+
+    var input by remember { mutableStateOf("") }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(12.dp)
@@ -44,6 +47,7 @@ fun ChatScreen() {
                 .fillMaxWidth()
                 .padding(top = 8.dp)
         ) {
+
             OutlinedTextField(
                 value = input,
                 onValueChange = { input = it },
@@ -51,21 +55,20 @@ fun ChatScreen() {
                 placeholder = { Text("Type message...") }
             )
 
-            Spacer( modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
             Button(
                 onClick = {
                     if (input.isNotBlank()) {
-                        messages.add(ChatMessage(input, true))
-                        input = ""
 
-                        messages.add(ChatMessage("Thinking..", false))
+                        viewModel.sendMessage(input, true)
+
+                        input = ""
                     }
                 }
             ) {
                 Text("Send")
             }
-
         }
     }
 }
