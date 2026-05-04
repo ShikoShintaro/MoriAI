@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.olokogini.moriai.navigation.AppNavigation
+import androidx.activity.compose.setContent
 
 class MainActivity : ComponentActivity() {
 
