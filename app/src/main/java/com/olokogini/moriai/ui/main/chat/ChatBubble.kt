@@ -60,7 +60,7 @@ fun ChatBubble(message: ChatMessage) {
                 )
             ) {
                 Text(
-                    text = message.text,
+                    text = message.message,
                     modifier = Modifier.padding(12.dp),
                     color = if (isUser)
                         MaterialTheme.colorScheme.onPrimary
