@@ -1,6 +1,6 @@
 package com.olokogini.moriai.ui.main.chat
 
-data class ChatMessage (
-    val text : String,
-    val isUser : Boolean
+data class ChatMessage(
+    val message: String,
+    val isUser: Boolean
 )
