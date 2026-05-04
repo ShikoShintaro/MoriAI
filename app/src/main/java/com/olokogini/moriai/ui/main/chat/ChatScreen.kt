@@ -61,7 +61,7 @@ fun ChatScreen(viewModel: ChatViewModel) {
                 onClick = {
                     if (input.isNotBlank()) {
 
-                        viewModel.sendMessage(input, true)
+                        viewModel.sendMessage(input)
 
                         input = ""
                     }
