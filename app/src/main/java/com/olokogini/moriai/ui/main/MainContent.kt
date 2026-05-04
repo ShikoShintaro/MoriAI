@@ -6,15 +6,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import androidx.room.Room
+import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.ui.main.chat.ChatScreen
-import com.olokogini.moriai.ui.main.chat.data.ChatDatabase
-import com.olokogini.moriai.ui.main.chat.data.ChatRepository
 import com.olokogini.moriai.ui.main.chat.viewmodel.ChatViewModel
 import com.olokogini.moriai.ui.main.chat.viewmodel.ChatViewModelFactory
 import com.olokogini.moriai.ui.main.event.EventsScreen
 import com.olokogini.moriai.ui.main.profile.ProfileScreen
 import com.olokogini.moriai.ui.main.settings.SettingsScreen
-
+import com.olokogini.moriai.ui.main.chat.data.ChatRepository
+import com.olokogini.moriai.ui.main.chat.data.ChatDatabase
 
 
 @Composable
@@ -33,7 +33,10 @@ fun MainContent(innerNavController: NavHostController) {
                 "chat_db"
             ).build()
 
-            val repo = ChatRepository(db.chatDao())
+            val repo = ChatRepository(
+                dao = db.chatDao(),
+                api = RetroFitClient.chatApi
+            )
 
             val viewModel: ChatViewModel = viewModel(
                 factory = ChatViewModelFactory(repo)

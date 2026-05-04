@@ -10,10 +10,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ChatViewModel(private val repo: ChatRepository) : ViewModel() {
+
     val messages = repo.getMessages()
         .map { list ->
             list.map {
-                ChatMessage(it.message, it.isUser)
+                ChatMessage(
+                    message = it.message,
+                    isUser = it.isUser
+                )
             }
         }
         .stateIn(
@@ -21,12 +25,10 @@ class ChatViewModel(private val repo: ChatRepository) : ViewModel() {
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
-    fun sendMessage(text : String, isUser: Boolean) {
+
+    fun sendMessage(text: String) {
         viewModelScope.launch {
-            repo.sendMessage(text , isUser)
+            repo.sendMessage(text, true)
         }
     }
-
-
-
 }
