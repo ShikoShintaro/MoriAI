@@ -1,71 +1,91 @@
-# MoriAI — Custom Transformer-Based AI Companion (WIP)
+# MoriAI — AI Companion System (WIP)
 
 ## Overview
 
-MoriAI is an ongoing project focused on building a custom AI companion system powered by a Transformer-based model.
+MoriAI is an ongoing full-stack AI companion project focused on building and integrating a custom Transformer-based language model into a real-world mobile application.
 
-The goal of this project is to explore:
+The project explores:
 
-* training large-scale language models from scratch
-* integrating them into real-world applications
-* developing a full-stack AI system (mobile, backend, and model)
+* Training and fine-tuning large-scale language models
+* Building a real-time AI chat system
+* Full-stack integration (Android, backend, and AI inference service)
+* Deploying distributed AI systems using cloud services
 
-This project is currently under active development. Model outputs and features are still being improved.
+This project is currently under active development, and model responses are being continuously improved for stability and coherence.
 
 ---
 
 ## Current Status
 
-* Android chat interface implemented
-* Node.js and MongoDB backend functional
-* Dataset pipeline completed (~158M lines processed)
-* Transformer model training in progress
-* Model responses are still unstable and being refined
+* Android chat interface fully implemented (Jetpack Compose)
+* Node.js backend with authentication and MongoDB integration completed
+* Dataset pipeline completed (~158M lines processed and cleaned)
+* Transformer model training and refinement ongoing
+* AI responses still being optimized for consistency and structure
+* Cloud integration with external AI inference service in progress
 
 ---
 
 ## System Architecture
 
-```id="arch2"
-[ Android App (Jetpack Compose) ]
-              │
-              ▼
-      [ Node.js Backend API ]
-              │
-              ▼
-      [ Transformer Model (Training / Inference in progress) ]
+```
+[ Android Application (Jetpack Compose) ]
+                  │
+                  ▼
+        [ Node.js Backend API ]
+                  │
+        ┌─────────┴─────────┐
+        ▼                   ▼
+[ MongoDB Database ]   [ AI Inference Service ]
+                          (FastAPI / Transformer Model)
 ```
 
 ---
 
 ## Tech Stack
 
-* Frontend: Kotlin (Jetpack Compose)
-* Backend: Node.js, Express
-* Database: MongoDB
-* AI Training: PyTorch
+Frontend:
+
+* Kotlin (Jetpack Compose)
+
+Backend:
+
+* Node.js
+* Express.js
+
+Database:
+
+* MongoDB
+
+AI / ML:
+
+* PyTorch
+* Custom Transformer Model
 
 ---
 
 ## Model Development
 
-* Custom Transformer architecture
+* Custom Transformer architecture designed from scratch
 * Large-scale dataset preprocessing completed
-* Training currently ongoing
+* Training pipeline implemented and actively refined
 
 Current focus:
 
-* improving response coherence
-* stabilizing training
-* reducing loss
+* Improving response coherence
+* Reducing repetition and hallucinations
+* Stabilizing generation output
+* Enhancing instruction-following behavior
 
 ---
 
-## Features (Current)
+## Current Features
 
-* Chat interface (Android)
-* User authentication with OTP verification
-* API communication between frontend and backend
+* Real-time chat interface (Android)
+* User authentication system (OTP-based verification)
+* Backend API integration
+* MongoDB-based user and message storage
+* AI-powered response generation (prototype stage)
 
 ---
 
@@ -73,35 +93,50 @@ Current focus:
 
 ### 1. Clone Repository
 
-```bash id="clone2"
+```bash
 git clone https://github.com/ShikoShintaro/MoriAI.git
 cd MoriAI
 ```
 
-### 2. Backend Setup
+---
 
-```bash id="backend2"
-cd backend
+### 2. Backend Setup (Node.js)
+
+```bash
+cd server
 npm install
 node server.js
 ```
 
-### 3. Android App
+---
 
-* Open the project in Android Studio
+### 3. Android Application
+
+* Open project in Android Studio
+* Sync Gradle
 * Run on emulator or physical device
 
 ---
 
 ## Planned Improvements
 
-* Improve model response quality
-* Add memory and personality system
-* Optimize inference performance
-* Deploy backend and model to cloud
+* Improve AI response stability and personality consistency
+* Add long-term memory system
+* Optimize inference speed
+* Deploy backend and AI services to cloud
+* Add contextual conversation understanding
+* Improve UI/UX experience in mobile app
 
 ---
 
 ## Author
 
 Shiko Shintaro
+
+---
+
+## Notes
+
+MoriAI is a research-driven project exploring the intersection of deep learning, mobile systems, and distributed backend architecture.
+
+The system is designed to evolve from a prototype into a scalable AI companion platform.
