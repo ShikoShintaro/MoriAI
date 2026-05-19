@@ -1,17 +1,27 @@
 package com.olokogini.moriai.ui.student
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.StudentInfoRequest
+import kotlinx.coroutines.launch
 
 @Composable
-fun StudentInfoScreen(navController: NavController, email: String) {
+fun StudentInfoScreen(
+    navController: NavController,
+    email : String
+) {
     var name by remember { mutableStateOf("") }
     var course by remember { mutableStateOf("") }
     var birthdate by remember { mutableStateOf("") }
@@ -19,67 +29,49 @@ fun StudentInfoScreen(navController: NavController, email: String) {
     var year by remember { mutableStateOf("") }
 
     var message by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
 
-    Column(
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFFE3F2FD),
+            Color(0xFFB2DFDB)
+        )
+    )
+
+    val buttonGradient = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFF64B5F6),
+            Color(0xFF4DB6AC)
+        )
+    )
+
+    Box (
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .background(backgroundGradient),
+        contentAlignment = Alignment.Center
     ) {
-        Text("Student Information", style = MaterialTheme.typography.headlineMedium)
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        OutlinedTextField(value = name, onValueChange = { name = it}, label = { Text("Full Name")})
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(value = course, onValueChange = { course = it}, label = { Text("Course")})
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(value = birthdate, onValueChange = { birthdate = it}, label = { Text("Birthdate")})
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(value = section, onValueChange = { section = it}, label = { Text("Section")})
-        Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(value = year, onValueChange = { year = it}, label = { Text("Year")})
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Button(
-            onClick = {
-                scope.launch {
-                    try {
-                        val response = RetroFitClient.api.submitStudentInfo(
-                            StudentInfoRequest(
-                                email = email,
-                                fullName = name,
-                                course = course,
-                                birthdate = birthdate,
-                                section = section,
-                                year = year
-                            )
-                        )
-                        if (response.isSuccessful) {
-                            message = "Saved Sucessfully"
-                            navController.navigate("login")
-                        } else {
-                            message = "Failed to save"
-                        }
-                    } catch (e: Exception) {
-                        message = "Error : ${e.message}"
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(24.dp)
         ) {
-            Text("Submit")
+
+            Text(
+                text = "MORI",
+                fontSize = 34.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF263238)
+            )
+
+            Text(
+                text = "STUDENT PROFILE SETUP",
+                fontSize = 12.sp,
+                color = Color.DarkGray
+            )
+
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(message)
-
     }
+
 }
