@@ -1,12 +1,9 @@
 package com.olokogini.moriai.ui.main.settings
 
 import android.content.Context
-
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.*
@@ -16,23 +13,16 @@ fun SettingsScreen() {
 
     val context = LocalContext.current
 
-    var darkMode by remember {
-        mutableStateOf(SettingsHelper.getDarkMode(context))
-    }
+    var darkMode by remember { mutableStateOf(SettingsHelper.getDarkMode(context)) }
+    var notifications by remember { mutableStateOf(SettingsHelper.getNotifications(context)) }
+    var autoChat by remember { mutableStateOf(SettingsHelper.getAutoSaveChat(context)) }
 
-    var notifications by remember {
-        mutableStateOf(SettingsHelper.getNotifications(context))
-    }
-
-    var autoChat by remember {
-        mutableStateOf(SettingsHelper.getAutoSaveChat(context))
-    }
-
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
     ) {
+
         Text("Settings", style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -47,6 +37,7 @@ fun SettingsScreen() {
                 onCheckedChange = {
                     darkMode = it
                     SettingsHelper.setDarkMode(context, it)
+                    (context as? android.app.Activity)?.recreate()
                 }
             )
         }
@@ -87,16 +78,21 @@ fun SettingsScreen() {
 
         Button(
             onClick = {
+
                 val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                prefs.edit().clear().apply()
+
+                prefs.edit()
+                    .clear()
+                    .apply()
 
                 println("Logged Out")
+
+                // IMPORTANT: force restart activity state
+                (context as? android.app.Activity)?.finish()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Logout")
         }
-
     }
-
 }

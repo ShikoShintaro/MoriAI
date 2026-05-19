@@ -52,7 +52,10 @@ fun ResetOtpScreen(navController: NavController, email: String) {
 
                     try {
                         val response = RetroFitClient.api.verifyResetOtp(
-                            verifyResetRequest( email, code.trim())
+                            verifyResetRequest(
+                                email = email,
+                                code = code.trim()
+                            )
                         )
 
                         if (response.isSuccessful) {

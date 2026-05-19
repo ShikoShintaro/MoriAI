@@ -2,6 +2,8 @@ package com.olokogini.moriai.ui.main.chat.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.olokogini.moriai.api.ChatRequest
+import com.olokogini.moriai.api.ChatService
 import com.olokogini.moriai.ui.main.chat.ChatMessage
 import com.olokogini.moriai.ui.main.chat.data.ChatRepository
 import kotlinx.coroutines.flow.SharingStarted
@@ -9,7 +11,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ChatViewModel(private val repo: ChatRepository) : ViewModel() {
+class ChatViewModel(
+    private val repo: ChatRepository
+) : ViewModel() {
 
     val messages = repo.getMessages()
         .map { list ->
@@ -28,7 +32,7 @@ class ChatViewModel(private val repo: ChatRepository) : ViewModel() {
 
     fun sendMessage(text: String) {
         viewModelScope.launch {
-            repo.sendMessage(text, true)
+            repo.sendMessage(text)
         }
     }
 }

@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 object RetroFitClient {
-    private const val BASE_URL = "http://10.0.2.2:3000/api/"
+    private const val BASE_URL = "https://moriserver.onrender.com/api/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -14,6 +14,9 @@ object RetroFitClient {
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(logging)
+        .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+        .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+        .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
         .build()
 
     private val retrofit by lazy {

@@ -1,6 +1,9 @@
 package com.olokogini.moriai.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.*
 import com.olokogini.moriai.data.AppPreferences
@@ -13,33 +16,34 @@ import com.olokogini.moriai.ui.main.MainScreen
 import com.olokogini.moriai.ui.otp.OtpScreen
 import com.olokogini.moriai.ui.otp.ResetOtpScreen
 import com.olokogini.moriai.ui.student.StudentInfoScreen
-
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.mutableStateOf
+import com.olokogini.moriai.ui.login.LoginUiState
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(startDestination: String) {
 
     val navController = rememberNavController()
     val context = LocalContext.current
-    val prefs = AppPreferences(context)
     val scope = rememberCoroutineScope()
 
-    val firstLaunch by prefs.isFirstLaunch.collectAsState(initial = null)
+    val appPrefs = AppPreferences(context)
 
-    if (firstLaunch == null ) {
-        return
-    }
+    val userPrefs = context.getSharedPreferences(
+        "user_prefs",
+        android.content.Context.MODE_PRIVATE
+    )
 
     NavHost(
         navController = navController,
-        startDestination = if (firstLaunch == true ) "intro" else "login"
+        startDestination = startDestination
     ) {
 
         composable("intro") {
             IntroScreen(
                 onFinish = {
                     scope.launch {
-                        prefs.setFirstLaunchComplete()
+                        appPrefs.setFirstLaunchComplete()
                         navController.navigate("login") {
                             popUpTo("intro") { inclusive = true }
                         }
@@ -49,18 +53,33 @@ fun AppNavigation() {
         }
 
         composable("login") {
+
+            val loginState = remember { mutableStateOf(LoginUiState()) }
+
             LoginScreen(
-                onLoginSuccess = {
+                state = loginState.value,
+                onEmailChange = {
+                    loginState.value = loginState.value.copy(email = it)
+                },
+                onPasswordChange = {
+                    loginState.value = loginState.value.copy(password = it)
+                },
+                onLoginClick = {
+                    userPrefs.edit()
+                        .putBoolean("is_logged_in", true)
+                        .apply()
+
                     navController.navigate("chat") {
-                        popUpTo("login") {inclusive = true }
+                        popUpTo("login") { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
                 onRegister = { navController.navigate("register") },
-                onForgot = {  navController.navigate("forgot_password") } //disabled
+                onForgot = { navController.navigate("forgot_password") }
             )
         }
 
-        composable ("chat"){
+        composable("chat") {
             MainScreen(navController)
         }
 
@@ -72,25 +91,24 @@ fun AppNavigation() {
             ForgotPasswordScreen(navController)
         }
 
-        composable("otp/{email}") { backStackEntry ->
-            val email = backStackEntry.arguments?.getString("email") ?: ""
+        composable("otp/{email}") {
+            val email = it.arguments?.getString("email") ?: ""
             OtpScreen(navController, email)
         }
 
-        composable("student_info/{email}") { backStackEntry ->
-            val email = backStackEntry.arguments?.getString("email") ?: ""
+        composable("student_info/{email}") {
+            val email = it.arguments?.getString("email") ?: ""
             StudentInfoScreen(navController, email)
         }
 
-        composable("reset_otp/{email}") { backStackEntry ->
-            val email = backStackEntry.arguments?.getString("email") ?: ""
+        composable("reset_otp/{email}") {
+            val email = it.arguments?.getString("email") ?: ""
             ResetOtpScreen(navController, email)
         }
 
-        composable("reset_password/{email}") { backStackEntry ->
-            val email = backStackEntry.arguments?.getString("email") ?: ""
+        composable("reset_password/{email}") {
+            val email = it.arguments?.getString("email") ?: ""
             ResetPasswordScreen(navController, email)
         }
-
     }
 }

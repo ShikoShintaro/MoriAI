@@ -13,7 +13,7 @@ data class ChatResponse(
 
 interface ChatService {
 
-    @POST("chat") // matches your backend route
+    @POST("chat")
     suspend fun sendMessage(
         @Body request: ChatRequest
     ): ChatResponse

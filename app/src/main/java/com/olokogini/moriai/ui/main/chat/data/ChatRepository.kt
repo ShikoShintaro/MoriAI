@@ -13,9 +13,9 @@ class ChatRepository(
         return dao.getMessages()
     }
 
-    suspend fun sendMessage(message: String, isUser: Boolean) {
+    suspend fun sendMessage(message: String) {
 
-        // 1. Save USER message
+        // 1. Save USER message (ONLY HERE)
         dao.insertMessage(
             ChatMessageEntity(
                 message = message,
@@ -25,10 +25,10 @@ class ChatRepository(
         )
 
         try {
-            // 2. Call backend → Lightning AI
+            // 2. Call MORI backend
             val response = api.sendMessage(ChatRequest(message))
 
-            // 3. Save MORI reply
+            // 3. Save AI reply
             dao.insertMessage(
                 ChatMessageEntity(
                     message = response.reply,
@@ -38,7 +38,7 @@ class ChatRepository(
             )
 
         } catch (e: Exception) {
-            // 4. Fallback (VERY IMPORTANT for demo)
+
             dao.insertMessage(
                 ChatMessageEntity(
                     message = "MORI is unavailable right now.",

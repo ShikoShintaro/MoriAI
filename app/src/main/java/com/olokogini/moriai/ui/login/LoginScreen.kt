@@ -1,110 +1,212 @@
 package com.olokogini.moriai.ui.login
 
+import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import retrofit2.Response
-import com.olokogini.moriai.api.ApiResponse
-import android.content.Context
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.olokogini.moriai.api.LoginRequest
-import com.olokogini.moriai.api.RetroFitClient
+import androidx.compose.ui.unit.sp
+import com.olokogini.moriai.api.*
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onRegister: () -> Unit,
-    onForgot: () -> Unit
+    state : LoginUiState,
+    onEmailChange : (String) -> Unit,
+    onPasswordChange : (String) -> Unit,
+    onLoginClick : () -> Unit,
+    onRegister : () -> Unit,
+    onForgot : () -> Unit
 ) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var message by remember { mutableStateOf("") }
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFFE3F2FD),
+            Color(0xFFB2DFDB)
+        )
+    )
 
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    val buttonGradient = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFF64B5F6),
+            Color(0xFF4DB6AC)
+        )
+    )
 
-    Column(
+    Box (
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+            .background(backgroundGradient),
+        contentAlignment = Alignment.Center
     ) {
 
-        Text("Login", style = MaterialTheme.typography.headlineMedium)
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(24.dp)
+        ) {
+            Text (
+                text = "MORI",
+                fontSize = 34.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF263238)
+            )
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Text (
+                text = "SCHOOL AI COMPANION CHATBOT",
+                fontSize = 11.sp,
+                color = Color.DarkGray
+            )
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(10.dp))
+            Card (
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ) {
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
+                Column (
+                    modifier = Modifier.padding(24.dp)
+                ) {
 
-        Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
 
-        Button(
-            onClick = {
-                scope.launch {
-                    try {
-
-                        val response : Response<ApiResponse> = RetroFitClient.api.login(
-                            LoginRequest(
-                                email = email.trim(),
-                                password = password.trim()
-                            )
+                        Text (
+                            text = "LOG IN",
+                            color = Color(0xff42A5F5),
+                            fontWeight = FontWeight.Bold
                         )
 
-                        if (response.isSuccessful && response.body() != null) {
-                            val emailFromApi = response.body()?.email ?: ""
+                        TextButton (onClick = onRegister ) {
+                            Text("SIGN UP")
+                        }
+                    }
 
-                            val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                            prefs.edit().putString("email", emailFromApi).apply()
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                            println("SAVED EMAIL: $emailFromApi")
+                    OutlinedTextField(
+                        value = state.email,
+                        onValueChange = onEmailChange,
+                        placeholder = { Text("Email...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true
+                    )
 
-                            message = "Login success"
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                            onLoginSuccess()
-                        } else {
-                            message = response.errorBody()?.string() ?: "Login Failed"
+                    OutlinedTextField(
+                        value = state.password,
+                        onValueChange = onPasswordChange,
+                        placeholder = { Text("Password...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row (
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+
+                        TextButton(onClick = onForgot) {
+                            Text ("Forgot Password")
                         }
 
-                    } catch (e: Exception) {
-                        message = "Error : ${e.message}"
                     }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button (
+                        onClick = onLoginClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(54.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        contentPadding = PaddingValues()
+                    ) {
+
+                        Box (
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(buttonGradient),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text (
+                                text = "LOG IN",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text (
+                        text = state.message,
+                        color = Color.Red
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Text (
+                            text = "  or  ",
+                            color = Color.Gray
+                        )
+
+                        HorizontalDivider(
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedButton(
+                            onClick = { },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text ("Continue With Google")
+                        }
+
+                    }
+
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Login")
+
+            }
+
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(message)
-
-        TextButton(onClick = onForgot) {
-            Text("Forgot Password?")
-        }
-
-        TextButton(onClick = onRegister) {
-            Text("Create Account")
-        }
     }
+
 }
