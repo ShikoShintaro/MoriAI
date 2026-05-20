@@ -1,161 +1,162 @@
 package com.olokogini.moriai.ui.login
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.olokogini.moriai.api.*
-import kotlinx.coroutines.launch
-import retrofit2.Response
 
 @Composable
 fun LoginScreen(
-    state : LoginUiState,
-    onEmailChange : (String) -> Unit,
-    onPasswordChange : (String) -> Unit,
-    onLoginClick : () -> Unit,
-    onRegister : () -> Unit,
-    onForgot : () -> Unit
+    state: LoginUiState,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    onRegister: () -> Unit,
+    onForgot: () -> Unit
 ) {
 
+    val colors = MaterialTheme.colorScheme
+
+    // SAME BACKGROUND AS ALL AUTH SCREENS (FIXED CONSISTENCY)
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE3F2FD),
-            Color(0xFFB2DFDB)
+            colors.background,
+            colors.surface
         )
     )
-
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF64B5F6),
-            Color(0xFF4DB6AC)
+            colors.primary,
+            colors.secondary
         )
     )
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient),
         contentAlignment = Alignment.Center
     ) {
 
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(24.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text (
+
+            // TITLE
+            Text(
                 text = "MORI",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF263238)
+                color = colors.onBackground
             )
 
-            Text (
+            Text(
                 text = "SCHOOL AI COMPANION CHATBOT",
                 fontSize = 11.sp,
-                color = Color.DarkGray
+                color = colors.onSurface.copy(alpha = 0.8f)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Card (
+            // CARD
+            Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = colors.surface
                 )
             ) {
 
-                Column (
-                    modifier = Modifier.padding(24.dp)
-                ) {
+                Column(modifier = Modifier.padding(24.dp)) {
 
+                    // HEADER
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text (
+                        Text(
                             text = "LOG IN",
-                            color = Color(0xff42A5F5),
+                            color = colors.primary,
                             fontWeight = FontWeight.Bold
                         )
 
-                        TextButton (onClick = onRegister ) {
-                            Text("SIGN UP")
+                        TextButton(onClick = onRegister) {
+                            Text(
+                                text = "SIGN UP",
+                                color = colors.primary
+                            )
                         }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // EMAIL
                     OutlinedTextField(
                         value = state.email,
                         onValueChange = onEmailChange,
-                        placeholder = { Text("Email...") },
+                        placeholder = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         singleLine = true
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
+                    // PASSWORD
                     OutlinedTextField(
                         value = state.password,
                         onValueChange = onPasswordChange,
-                        placeholder = { Text("Password...") },
+                        placeholder = { Text("Password") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         singleLine = true
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row (
+                    // FORGOT PASSWORD
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-
                         TextButton(onClick = onForgot) {
-                            Text ("Forgot Password")
+                            Text("Forgot Password?")
                         }
-
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Button (
+                    // LOGIN BUTTON
+                    Button(
                         onClick = onLoginClick,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
                         shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        ),
-                        contentPadding = PaddingValues()
+                            containerColor = androidx.compose.ui.graphics.Color.Transparent
+                        )
                     ) {
-
-                        Box (
+                        Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(buttonGradient),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text (
+                            Text(
                                 text = "LOG IN",
-                                color = Color.Black,
+                                color = colors.onPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -163,50 +164,15 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Text (
-                        text = state.message,
-                        color = Color.Red
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        HorizontalDivider(
-                            modifier = Modifier.weight(1f)
+                    // ERROR MESSAGE
+                    if (state.message.isNotEmpty()) {
+                        Text(
+                            text = state.message,
+                            color = colors.error
                         )
-
-                        Text (
-                            text = "  or  ",
-                            color = Color.Gray
-                        )
-
-                        HorizontalDivider(
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        OutlinedButton(
-                            onClick = { },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Text ("Continue With Google")
-                        }
-
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }

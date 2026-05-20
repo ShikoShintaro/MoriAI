@@ -27,65 +27,69 @@ fun ForgotPasswordScreen(navController: NavController) {
     var isLoading by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+    val colors = MaterialTheme.colorScheme
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE3F2FD),
-            Color(0xFFB2DFDB)
+            colors.background,
+            colors.surface
         )
     )
-
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF64B5F6),
-            Color(0xFF4DB6AC)
+            colors.primary,
+            colors.secondary
         )
     )
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient),
         contentAlignment = Alignment.Center
     ) {
 
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(24.dp)
         ) {
 
-            Text (
+            // TITLE
+            Text(
                 text = "MORI",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF263238)
+                color = colors.onBackground
             )
 
-            Text (
+            Text(
                 text = "PASSWORD RECOVERY",
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = colors.onSurface.copy(alpha = 0.7f)
             )
 
-            Spacer (modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Card (
+            // CARD
+            Card(
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.surface
+                ),
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                Column (
-                    modifier = Modifier.padding(24.dp)
-                ) {
-                    Text (
+                Column(modifier = Modifier.padding(24.dp)) {
+
+                    Text(
                         text = "FORGOT PASSWORD",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF42A5F5)
+                        color = colors.primary
                     )
 
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
+                    // EMAIL INPUT
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -97,44 +101,43 @@ fun ForgotPasswordScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // BUTTON
                     Button(
                         onClick = {
-                         scope.launch {
-                             isLoading = true
-                             error = ""
+                            scope.launch {
+                                isLoading = true
+                                error = ""
 
-                             try {
-                                 val response = RetroFitClient.api.forgotPassword(
-                                     ForgotPasswordRequest(email)
-                                 )
+                                try {
+                                    val response = RetroFitClient.api.forgotPassword(
+                                        ForgotPasswordRequest(email)
+                                    )
 
-                                 if (response.isSuccessful) {
-                                     navController.navigate("reset_otp/$email")
-                                 } else {
-                                     error = "Failed to send reset code"
-                                 }
+                                    if (response.isSuccessful) {
+                                        navController.navigate("reset_otp/$email")
+                                    } else {
+                                        error = "Failed to send reset code"
+                                    }
 
-                             } catch (e: Exception) {
-                                error = "Network error : ${e.message}"
-                             }
+                                } catch (e: Exception) {
+                                    error = "Network error: ${e.message}"
+                                }
 
-                             isLoading = false
-                         }
-
+                                isLoading = false
+                            }
                         },
-
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
                         shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
                         ),
-                        contentPadding = PaddingValues(),
                         enabled = email.isNotEmpty() && !isLoading
                     ) {
 
-                        Box (
+                        Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(buttonGradient),
@@ -144,44 +147,37 @@ fun ForgotPasswordScreen(navController: NavController) {
                             if (isLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(20.dp),
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             } else {
-                                Text (
+                                Text(
                                     text = "SEND CODE",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             }
-
                         }
-
                     }
 
                     if (error.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = error,
-                            color = MaterialTheme.colorScheme.error
+                            color = colors.error
                         )
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-
-                    TextButton (
+                    
+                    TextButton(
                         onClick = {
                             navController.navigate("login")
                         }
                     ) {
                         Text("Back to login")
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }
