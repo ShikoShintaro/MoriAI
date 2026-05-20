@@ -1,19 +1,19 @@
 package com.olokogini.moriai.ui.forgotpassword
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.*
-import androidx.navigation.NavController
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.*
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.resetPasswordRequest
 import kotlinx.coroutines.launch
@@ -25,81 +25,78 @@ fun ResetPasswordScreen(
 ) {
 
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember {  mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     var error by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+    val colors = MaterialTheme.colorScheme
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE3F2FD),
-            Color(0xFFB2DFDB)
+            colors.background,
+            colors.surface
         )
     )
 
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF64B5F6),
-            Color(0xFF4DB6AC)
+            colors.primary,
+            colors.secondary
         )
     )
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient),
         contentAlignment = Alignment.Center
     ) {
 
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(24.dp)
         ) {
 
-            Text (
+            Text(
                 text = "MORI",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF263238)
+                color = colors.onBackground
             )
 
-            Text (
+            Text(
                 text = "PASSWORD RESET",
                 fontSize = 12.sp,
-                color = Color.Gray
+                color = colors.onSurface
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Card (
+            // CARD
+            Card(
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = colors.surface
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column (
-                    modifier = Modifier.padding(24.dp)
-                ) {
 
-                    Text (
+                Column(modifier = Modifier.padding(24.dp)) {
+
+                    Text(
                         text = "RESET PASSWORD",
                         fontWeight = FontWeight.Bold,
-                         color = Color(0xFF42A5F5)
+                        color = colors.primary
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
                     OutlinedTextField(
                         value = password,
-                        onValueChange = {
-                            password = it
-                        },
-                        label = {
-                            Text("New Password")
-                        },
+                        onValueChange = { password = it },
+                        label = { Text("New Password") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -110,12 +107,8 @@ fun ResetPasswordScreen(
 
                     OutlinedTextField(
                         value = confirmPassword,
-                        onValueChange = {
-                            confirmPassword = it
-                        },
-                        label = {
-                            Text("Confirm Password")
-                        },
+                        onValueChange = { confirmPassword = it },
+                        label = { Text("Confirm Password") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -126,13 +119,14 @@ fun ResetPasswordScreen(
 
                     Button(
                         onClick = {
+
                             if (password.length < 6) {
                                 error = "Password must be at least 6 characters"
                                 return@Button
                             }
 
                             if (password != confirmPassword) {
-                                error = "Password do not match"
+                                error = "Passwords do not match"
                                 return@Button
                             }
 
@@ -141,31 +135,24 @@ fun ResetPasswordScreen(
                                 error = ""
 
                                 try {
-
                                     val response = RetroFitClient.api.resetPassword(
-                                        resetPasswordRequest(
-                                            email,
-                                            password
-                                        )
+                                        resetPasswordRequest(email, password)
                                     )
 
                                     if (response.isSuccessful) {
                                         navController.navigate("login") {
-                                            popUpTo("login") {
-                                                inclusive = true
-                                            }
+                                            popUpTo("login") { inclusive = true }
                                         }
                                     } else {
                                         error = "Reset failed"
                                     }
 
                                 } catch (e: Exception) {
-                                        error = "Network error : ${e.message}"
+                                    error = "Network error: ${e.message}"
                                 }
 
-                                isLoading = true
+                                isLoading = false
                             }
-
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -175,47 +162,42 @@ fun ResetPasswordScreen(
                             containerColor = Color.Transparent
                         ),
                         contentPadding = PaddingValues(),
-
-                        enabled = password.isNotEmpty() &&
-                        confirmPassword.isNotEmpty() &&
-                        !isLoading
+                        enabled = password.isNotEmpty()
+                                && confirmPassword.isNotEmpty()
+                                && !isLoading
                     ) {
 
-                        Box (
+                        Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(buttonGradient),
                             contentAlignment = Alignment.Center
                         ) {
+
                             if (isLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(20.dp),
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             } else {
-                                Text (
+                                Text(
                                     text = "RESET PASSWORD",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             }
                         }
                     }
 
                     if (error.isNotEmpty()) {
-                         Spacer(modifier = Modifier.height(12.dp))
-
-                        Text (
-                            text = "error",
-                            color = MaterialTheme.colorScheme.error
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = error,
+                            color = colors.error
                         )
                     }
-
                 }
             }
-
         }
-
     }
-
 }

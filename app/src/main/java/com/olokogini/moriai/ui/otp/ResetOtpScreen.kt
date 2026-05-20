@@ -4,11 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,72 +18,82 @@ import com.olokogini.moriai.api.verifyResetRequest
 import kotlinx.coroutines.launch
 
 @Composable
-fun RestOtpScreen(
+fun ResetOtpScreen(
     navController: NavController,
-    email : String
+    email: String
 ) {
     var code by remember { mutableStateOf("") }
     var error by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+    val colors = MaterialTheme.colorScheme
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE3F2FD),
-            Color(0xFFB2DFDB)
+            colors.background,
+            colors.surface
         )
     )
 
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF64B5F6),
-            Color(0xFF4DB6AC)
+            colors.primary,
+            colors.secondary
         )
     )
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient),
         contentAlignment = Alignment.Center
     ) {
-        Column (
+
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(24.dp)
         ) {
-            Text (
+
+            // TITLE
+            Text(
                 text = "MORI",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF263238)
+                color = colors.onBackground
             )
 
-            Text (
+            Text(
                 text = "RESET VERIFICATION",
                 fontSize = 12.sp,
-                color = Color.DarkGray
+                color = colors.onSurface
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Card (
+            // CARD
+            Card(
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.surface
+                ),
                 modifier = Modifier.fillMaxWidth()
             ) {
+
                 Column(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text (
+
+                    Text(
                         text = "ENTER CODE",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF42A5F5)
+                        color = colors.primary
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // OTP INPUT
                     OutlinedTextField(
                         value = code,
                         onValueChange = {
@@ -91,7 +101,7 @@ fun RestOtpScreen(
                                 code = it
                             }
                         },
-                        label = { Text("6-Digit Code") },
+                        label = { Text("6-digit code") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         singleLine = true
@@ -99,16 +109,14 @@ fun RestOtpScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // BUTTON
                     Button(
                         onClick = {
-
                             scope.launch {
-
                                 isLoading = true
                                 error = ""
 
                                 try {
-
                                     val response = RetroFitClient.api.verifyResetOtp(
                                         verifyResetRequest(
                                             email = email,
@@ -117,13 +125,11 @@ fun RestOtpScreen(
                                     )
 
                                     if (response.isSuccessful) {
-
                                         navController.navigate("reset_password/$email") {
                                             popUpTo("reset_otp/$email") {
                                                 inclusive = true
                                             }
                                         }
-
                                     } else {
                                         error = "Invalid or expired code"
                                     }
@@ -135,19 +141,14 @@ fun RestOtpScreen(
                                 isLoading = false
                             }
                         },
-
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
-
                         shape = RoundedCornerShape(16.dp),
-
+                        contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
                         ),
-
-                        contentPadding = PaddingValues(),
-
                         enabled = code.length == 6 && !isLoading
                     ) {
 
@@ -161,23 +162,24 @@ fun RestOtpScreen(
                             if (isLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(20.dp),
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             } else {
                                 Text(
                                     text = "VERIFY",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             }
                         }
                     }
 
+                    // ERROR
                     if (error.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = error,
-                            color = MaterialTheme.colorScheme.error
+                            color = colors.error
                         )
                     }
                 }
