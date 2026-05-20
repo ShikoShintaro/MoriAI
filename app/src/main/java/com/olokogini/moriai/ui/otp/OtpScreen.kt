@@ -8,11 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.compose.ui.unit.*
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.VerifyRequest
 import kotlinx.coroutines.launch
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OtpScreen(
     navController: NavController,
-    email : String
+    email: String
 ) {
 
     var code by remember { mutableStateOf("") }
@@ -28,61 +27,71 @@ fun OtpScreen(
     var isLoading by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+    val colors = MaterialTheme.colorScheme
 
+    // SAME AUTH BACKGROUND AS LOGIN/REGISTER
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE3F2FD),
-            Color(0xFFB2DFDB)
+            colors.background,
+            colors.surface
         )
     )
 
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF64B5F6),
-            Color(0xFF4DB6AC)
+            colors.primary,
+            colors.secondary
         )
     )
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundGradient),
         contentAlignment = Alignment.Center
     ) {
 
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(24.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text (
+
+            // TITLE
+            Text(
                 text = "MORI",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF263238)
+                color = colors.onBackground
             )
 
             Text(
                 text = "EMAIL VERIFICATION",
-                fontSize = 12.sp,
-                color = Color.DarkGray
+                fontSize = 11.sp,
+                color = colors.onSurface
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Card (
+            // CARD
+            Card(
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = Modifier.fillMaxWidth()
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.surface
+                )
             ) {
-                Column (
+
+                Column(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Text (
+                    Text(
                         text = "VERIFY",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF42A5F5)
+                        color = colors.primary
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -92,16 +101,16 @@ fun OtpScreen(
                         onValueChange = {
                             if (it.length <= 6) code = it
                         },
-                        label = {
-                            Text("6-digit-code")
-                        },
+                        label = { Text("6-digit code") },
+                        modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         singleLine = true
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    Button (
+                    // BUTTON
+                    Button(
                         onClick = {
                             scope.launch {
                                 isLoading = true
@@ -114,14 +123,16 @@ fun OtpScreen(
 
                                     if (response.isSuccessful) {
                                         navController.navigate("student_info/$email") {
-                                            popUpTo("otp/$email") {inclusive = true}
+                                            popUpTo("otp/$email") { inclusive = true }
                                         }
                                     } else {
                                         error = "Invalid or expired code"
                                     }
+
                                 } catch (e: Exception) {
-                                    error = "Network error : ${e.message}"
+                                    error = "Network error: ${e.message}"
                                 }
+
                                 isLoading = false
                             }
                         },
@@ -129,46 +140,45 @@ fun OtpScreen(
                             .fillMaxWidth()
                             .height(54.dp),
                         shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        ),
                         contentPadding = PaddingValues(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = androidx.compose.ui.graphics.Color.Transparent
+                        ),
                         enabled = code.isNotEmpty() && !isLoading
                     ) {
+
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(buttonGradient),
                             contentAlignment = Alignment.Center
                         ) {
+
                             if (isLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(20.dp),
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             } else {
-                                Text (
+                                Text(
                                     text = "VERIFY",
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.Black
+                                    color = colors.onPrimary
                                 )
                             }
                         }
                     }
 
+                    // ERROR
                     if (error.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = error,
-                            color = MaterialTheme.colorScheme.error
+                            color = colors.error
                         )
                     }
-
                 }
             }
-
         }
-
     }
-
 }

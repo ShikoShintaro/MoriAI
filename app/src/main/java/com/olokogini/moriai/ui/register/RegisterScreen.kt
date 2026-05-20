@@ -23,23 +23,25 @@ import kotlinx.coroutines.*
 @Composable
 fun RegisterScreen(navController: NavController) {
 
-    var username by remember {mutableStateOf("")}
-    var email by remember {mutableStateOf("")}
-    var password by remember {mutableStateOf("")}
+    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
+    val colors = MaterialTheme.colorScheme
 
+    // SAME BACKGROUND STYLE AS LOGIN
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
-            Color(0xFFE3F2FD),
-            Color(0xFFB2DFDB)
+            colors.background,
+            colors.surface
         )
     )
 
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
-            Color(0xFF64B5F6),
-            Color(0xFF4DB6AC)
+            colors.primary,
+            colors.secondary
         )
     )
 
@@ -51,44 +53,61 @@ fun RegisterScreen(navController: NavController) {
     ) {
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text (
+
+            // TITLE
+            Text(
                 text = "MORI",
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF263238)
+                color = colors.onBackground
             )
 
-            Text (
+            Text(
                 text = "CREATE ACCOUNT",
-                fontSize = 12.sp,
-                color = Color.DarkGray
+                fontSize = 11.sp,
+                color = colors.onSurface
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // CARD
             Card(
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = Modifier.fillMaxWidth()
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.surface
+                )
             ) {
 
-                Column (
-                    modifier = Modifier.padding(24.dp)
-                ) {
+                Column(modifier = Modifier.padding(24.dp)) {
+
                     Text(
                         text = "SIGN UP",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF42A5F5)
+                        color = colors.primary
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    OutlinedTextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = { Text("Username") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     OutlinedTextField(
                         value = email,
-                        onValueChange = { email = it},
+                        onValueChange = { email = it },
                         label = { Text("Email") },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -99,7 +118,7 @@ fun RegisterScreen(navController: NavController) {
 
                     OutlinedTextField(
                         value = password,
-                        onValueChange = { password = it},
+                        onValueChange = { password = it },
                         label = { Text("Password") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
@@ -109,6 +128,7 @@ fun RegisterScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // BUTTON (same style as login)
                     Button(
                         onClick = {
                             scope.launch {
@@ -118,12 +138,10 @@ fun RegisterScreen(navController: NavController) {
                                     )
 
                                     if (response.isSuccessful) {
-                                        navController.navigate("otp/${email}")
-                                    } else {
-                                        println("Register failed : ${response.message()}")
+                                        navController.navigate("otp/$email")
                                     }
-                                } catch(e: Exception) {
-                                    println("Error : ${e.message}")
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                 }
                             }
                         },
@@ -131,10 +149,10 @@ fun RegisterScreen(navController: NavController) {
                             .fillMaxWidth()
                             .height(54.dp),
                         shape = RoundedCornerShape(16.dp),
+                        contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        ),
-                        contentPadding = PaddingValues()
+                            containerColor = androidx.compose.ui.graphics.Color.Transparent
+                        )
                     ) {
                         Box(
                             modifier = Modifier
@@ -144,7 +162,7 @@ fun RegisterScreen(navController: NavController) {
                         ) {
                             Text(
                                 text = "SIGN UP",
-                                color = Color.Black,
+                                color = colors.onPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -153,9 +171,7 @@ fun RegisterScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(12.dp))
 
                     TextButton(
-                        onClick = {
-                            navController.navigate("login")
-                        }
+                        onClick = { navController.navigate("login") }
                     ) {
                         Text("Already have an account?")
                     }
