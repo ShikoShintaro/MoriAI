@@ -38,7 +38,6 @@ private val DarkColors = darkColorScheme(
     onError = Color.Black
 )
 
-// ✅ CLEAN TYPOGRAPHY (NO COLORS)
 private val MoriTypography = Typography()
 
 @Composable

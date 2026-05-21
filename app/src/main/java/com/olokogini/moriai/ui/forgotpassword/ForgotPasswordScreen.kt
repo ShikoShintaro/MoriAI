@@ -54,7 +54,6 @@ fun ForgotPasswordScreen(navController: NavController) {
             modifier = Modifier.padding(24.dp)
         ) {
 
-            // TITLE
             Text(
                 text = "MORI",
                 fontSize = 34.sp,
@@ -70,7 +69,6 @@ fun ForgotPasswordScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // CARD
             Card(
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(

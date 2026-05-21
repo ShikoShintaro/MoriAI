@@ -25,7 +25,6 @@ fun LoginScreen(
 
     val colors = MaterialTheme.colorScheme
 
-    // SAME BACKGROUND AS ALL AUTH SCREENS (FIXED CONSISTENCY)
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
             colors.background,
@@ -53,7 +52,6 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // TITLE
             Text(
                 text = "MORI",
                 fontSize = 34.sp,
@@ -69,7 +67,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // CARD
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
@@ -80,7 +77,6 @@ fun LoginScreen(
 
                 Column(modifier = Modifier.padding(24.dp)) {
 
-                    // HEADER
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
@@ -102,7 +98,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // EMAIL
                     OutlinedTextField(
                         value = state.email,
                         onValueChange = onEmailChange,
@@ -114,7 +109,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // PASSWORD
                     OutlinedTextField(
                         value = state.password,
                         onValueChange = onPasswordChange,
@@ -124,7 +118,6 @@ fun LoginScreen(
                         singleLine = true
                     )
 
-                    // FORGOT PASSWORD
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
@@ -136,7 +129,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // LOGIN BUTTON
                     Button(
                         onClick = onLoginClick,
                         modifier = Modifier
@@ -164,7 +156,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // ERROR MESSAGE
                     if (state.message.isNotEmpty()) {
                         Text(
                             text = state.message,

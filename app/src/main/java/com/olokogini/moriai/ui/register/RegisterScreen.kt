@@ -59,7 +59,6 @@ fun RegisterScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // TITLE
             Text(
                 text = "MORI",
                 fontSize = 34.sp,
@@ -75,7 +74,6 @@ fun RegisterScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // CARD
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
@@ -128,7 +126,6 @@ fun RegisterScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // BUTTON (same style as login)
                     Button(
                         onClick = {
                             scope.launch {

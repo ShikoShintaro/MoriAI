@@ -34,7 +34,6 @@ fun StudentInfoScreen(
     val scope = rememberCoroutineScope()
     val colors = MaterialTheme.colorScheme
 
-    // SAME AUTH BACKGROUND AS ALL SCREENS
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
             colors.background,
@@ -79,7 +78,6 @@ fun StudentInfoScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // CARD
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
@@ -156,7 +154,6 @@ fun StudentInfoScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // SUBMIT BUTTON
                     Button(
                         onClick = {
                             scope.launch {

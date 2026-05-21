@@ -55,7 +55,6 @@ fun ResetOtpScreen(
             modifier = Modifier.padding(24.dp)
         ) {
 
-            // TITLE
             Text(
                 text = "MORI",
                 fontSize = 34.sp,
@@ -71,7 +70,6 @@ fun ResetOtpScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // CARD
             Card(
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(
@@ -93,7 +91,6 @@ fun ResetOtpScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // OTP INPUT
                     OutlinedTextField(
                         value = code,
                         onValueChange = {
@@ -109,7 +106,6 @@ fun ResetOtpScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // BUTTON
                     Button(
                         onClick = {
                             scope.launch {
@@ -174,7 +170,6 @@ fun ResetOtpScreen(
                         }
                     }
 
-                    // ERROR
                     if (error.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
