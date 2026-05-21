@@ -1,74 +1,115 @@
 package com.olokogini.moriai.ui.main.chat
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material3.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.unit.dp
 
 @Composable
-fun ChatBubble(message: ChatMessage) {
+fun ChatBubble(
+    message: ChatMessage
+) {
     val isUser = message.isUser
 
-    var visible by remember {mutableStateOf (false) }
+    val colors = MaterialTheme.colorScheme
+
+    var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         visible = true
     }
 
     val scale by animateFloatAsState(
-        targetValue = if (visible) 1f else 0.09f,
+        targetValue = if (visible) 1f else 0.9f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
-        )
+        ),
+        label = "bubble_scale"
     )
 
     AnimatedVisibility(
         visible = visible,
-        enter = fadeIn(animationSpec = tween(200)) +
-            slideInHorizontally(
-                initialOffsetX = { if (isUser) it else -it }
-            )
+        enter = fadeIn(
+            animationSpec = tween(250)
+        ) + slideInHorizontally(
+            initialOffsetX = {
+                if (isUser) it else -it
+            }
+        )
     ) {
-        Row(
+
+        Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp),
-            horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
+
+            horizontalArrangement =
+                if (isUser) Arrangement.End
+                else Arrangement.Start
         ) {
-            Surface(
-                modifier = Modifier.scale(scale),
 
-                color = if (isUser)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.surfaceVariant,
+            Surface (
+                modifier = Modifier
+                    .widthIn(max = 300.dp)
+                    .scale(scale),
 
-                tonalElevation = if (isUser) 2.dp else 1.dp,
+                color =
+                    if (isUser)
+                        colors.primary
+                    else
+                        colors.surfaceVariant,
+
+                tonalElevation =
+                    if (isUser) 3.dp
+                    else 1.dp,
 
                 shape = RoundedCornerShape(
-                    topStart = 16.dp,
-                    topEnd = 16.dp,
-                    bottomStart = if (isUser) 16.dp else 4.dp,
-                    bottomEnd = if (isUser) 4.dp else 16.dp
+                    topStart = 18.dp,
+                    topEnd = 18.dp,
+                    bottomStart =
+                        if (isUser)
+                            18.dp
+                        else
+                            4.dp,
+                    bottomEnd =
+                        if (isUser)
+                            4.dp
+                        else
+                            18.dp
                 )
             ) {
                 Text(
                     text = message.message,
-                    modifier = Modifier.padding(12.dp),
-                    color = if (isUser)
-                        MaterialTheme.colorScheme.onPrimary
-                    else
-                        MaterialTheme.colorScheme.onSurface
+
+                    modifier = Modifier.padding(
+                        horizontal = 14.dp,
+                        vertical = 10.dp
+                    ),
+
+                    color =
+                        if (isUser)
+                            colors.onPrimary
+                        else
+                            colors.onSurfaceVariant,
+
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
     }
-
 }
