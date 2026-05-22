@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
-import androidx.room.util.splitToIntList
+import androidx.compose.ui.graphics.Color
 import coil.compose.AsyncImage
 import com.olokogini.moriai.api.ProfileResponse
 import com.olokogini.moriai.ui.main.profile.ProfileGetHelper
@@ -47,15 +47,17 @@ fun MainScreen(
 
     val innerNavController = rememberNavController()
 
+    val navBackStackEntry by innerNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val drawerState = rememberDrawerState(
         initialValue = DrawerValue.Closed
     )
 
+    val isTransparentTopBar =
+        currentRoute == "chat" || currentRoute == "events"
+
     val scope = rememberCoroutineScope()
-
-    val navBackStackEntry by innerNavController.currentBackStackEntryAsState()
-
-    val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(Unit) {
 
@@ -328,9 +330,11 @@ fun MainScreen(
 
                     colors = TopAppBarDefaults.topAppBarColors(
 
-                        containerColor = MaterialTheme.colorScheme.surface.copy(
-                            alpha = 0.92f
-                        ),
+                        containerColor = if (isTransparentTopBar) {
+                            Color.Transparent
+                        } else {
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
+                        },
 
                         scrolledContainerColor = MaterialTheme.colorScheme.surface,
 
@@ -339,45 +343,41 @@ fun MainScreen(
                         navigationIconContentColor = MaterialTheme.colorScheme.primary
                     ),
 
+                    modifier = Modifier
+                        .then(
+                            if (isTransparentTopBar) {
+                                Modifier
+                            } else {
+                                Modifier
+                            }
+                        ),
+
                     title = {
 
                         Column {
 
                             Text(
-
                                 text = when (currentRoute) {
-
                                     "chat" -> "MORI AI"
                                     "profile" -> "Profile"
                                     "settings" -> "Settings"
                                     "events" -> "Events"
-
                                     else -> ""
-
                                 },
-
                                 style = MaterialTheme.typography.titleLarge
                             )
 
                             if (currentRoute != "settings") {
 
                                 Text(
-
                                     text = when (currentRoute) {
-
                                         "chat" -> "AI School Assistant"
                                         "events" -> "Schedules & Activities"
                                         "profile" -> "Student Information"
-
                                         else -> ""
-
                                     },
-
                                     style = MaterialTheme.typography.bodySmall,
-
-                                    color = MaterialTheme.colorScheme.onSurface.copy(
-                                        alpha = 0.65f
-                                    )
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f)
                                 )
                             }
                         }
@@ -386,29 +386,17 @@ fun MainScreen(
                     navigationIcon = {
 
                         IconButton(
-
                             onClick = {
-
-                                scope.launch {
-                                    drawerState.open()
-                                }
+                                scope.launch { drawerState.open() }
                             }
-
                         ) {
 
                             Surface(
-
                                 shape = CircleShape,
-
-                                color = MaterialTheme.colorScheme.primary.copy(
-                                    alpha = 0.12f
-                                )
-
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                             ) {
 
-                                Box(
-                                    modifier = Modifier.padding(8.dp)
-                                ) {
+                                Box(modifier = Modifier.padding(8.dp)) {
 
                                     Icon(
                                         Icons.Default.Menu,
