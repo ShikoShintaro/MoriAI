@@ -4,51 +4,60 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.olokogini.moriai.ui.main.chat.viewmodel.ChatViewModel
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen (
+fun ChatScreen(
     viewModel: ChatViewModel
 ) {
-    val messages by viewModel.messages.collectAsState(
-        initial = emptyList()
-    )
+
+    val messages by viewModel.messages.collectAsState(initial = emptyList())
 
     var input by remember { mutableStateOf("") }
 
-    val colors = MaterialTheme.colorScheme
+    val listState = rememberLazyListState()
 
-    val backgroundGradient = Brush.verticalGradient(
-        colors = listOf(
-            colors.background,
-            colors.surface
-        )
-    )
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.lastIndex)
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundGradient)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.surface
+                    )
+                )
+            )
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
+
+        Column(modifier = Modifier.fillMaxSize()) {
 
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
+                contentPadding = PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 16.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(messages) { msg ->
@@ -56,48 +65,58 @@ fun ChatScreen (
                 }
             }
 
-            HorizontalDivider(
-                color = colors.outline.copy(alpha = 0.3f)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Surface(
+                tonalElevation = 10.dp,
+                shadowElevation = 12.dp,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+                modifier = Modifier.fillMaxWidth()
             ) {
 
-                OutlinedTextField(
-                    value = input,
-                    onValueChange = { input = it },
-                    modifier = Modifier.weight(1f),
-                    placeholder = {
-                        Text("Type message. . .")
-                    },
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.large
-                )
-
-                Button(
-                    onClick = {
-                        if (input.isNotBlank()) {
-                            viewModel.sendMessage(input.trim())
-
-                            input = ""
-                        }
-                    }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Text(
-                        text = "Send",
-                        color = colors.onPrimary
+                    OutlinedTextField(
+                        value = input,
+                        onValueChange = { input = it },
+                        modifier = Modifier.weight(1f),
+                        placeholder = { Text("Message MORI...") },
+                        shape = RoundedCornerShape(24.dp),
+                        maxLines = 4,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        )
                     )
 
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    IconButton(
+                        onClick = {
+                            if (input.isNotBlank()) {
+                                viewModel.sendMessage(input)
+                                input = ""
+                            }
+                        },
+                        modifier = Modifier
+                            .size(48.dp)
+                            .background(
+                                MaterialTheme.colorScheme.primary,
+                                CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Send,
+                            contentDescription = "Send",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
-
             }
-
         }
     }
-
 }

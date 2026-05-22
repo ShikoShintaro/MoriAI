@@ -55,7 +55,7 @@ fun MainScreen(
     )
 
     val isTransparentTopBar =
-        currentRoute == "chat" || currentRoute == "events"
+        currentRoute == "chat" || currentRoute == "events" || currentRoute == "settings"
 
     val scope = rememberCoroutineScope()
 
