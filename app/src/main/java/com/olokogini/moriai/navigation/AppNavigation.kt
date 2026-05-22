@@ -19,6 +19,8 @@ import com.olokogini.moriai.ui.student.StudentInfoScreen
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
 import com.olokogini.moriai.ui.login.LoginUiState
+import com.olokogini.moriai.ui.bootstrap.BootstrapScreen
+import com.olokogini.moriai.ui.main.home.HomeScreen
 
 @Composable
 fun AppNavigation(startDestination: String) {
@@ -77,6 +79,14 @@ fun AppNavigation(startDestination: String) {
                 onRegister = { navController.navigate("register") },
                 onForgot = { navController.navigate("forgot_password") }
             )
+        }
+
+        composable("bootstrap") {
+            BootstrapScreen(navController)
+        }
+
+        composable("home") {
+            HomeScreen(navController)
         }
 
         composable("chat") {

@@ -21,10 +21,8 @@ class MainActivity : ComponentActivity() {
         val darkMode = SettingsHelper.getDarkMode(this)
 
         AppCompatDelegate.setDefaultNightMode(
-            if (darkMode)
-                AppCompatDelegate.MODE_NIGHT_YES
-            else
-                AppCompatDelegate.MODE_NIGHT_NO
+            if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
         )
 
         setContent {
@@ -35,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavigation(
-                        startDestination = getStartDestination(this)
+                        startDestination = "bootstrap"
                     )
                 }
             }
@@ -44,8 +42,14 @@ class MainActivity : ComponentActivity() {
 
     private fun getStartDestination(context: Context): String {
         val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val isLoggedIn = prefs.getBoolean("is_logged_in", false)
 
-        return if (isLoggedIn) "chat" else "login"
+        val isLoggedIn = prefs.getBoolean("is_logged_in", false)
+        val isFirstLaunchDone = prefs.getBoolean("first_launch_done", false)
+
+        return when {
+            !isFirstLaunchDone -> "intro"
+            isLoggedIn -> "home"
+            else -> "login"
+        }
     }
 }

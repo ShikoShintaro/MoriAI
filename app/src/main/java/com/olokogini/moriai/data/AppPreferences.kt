@@ -1,9 +1,8 @@
 package com.olokogini.moriai.data
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,7 +16,7 @@ class AppPreferences(private val context: Context) {
     }
 
     val isFirstLaunch: Flow<Boolean> =
-        context.dataStore.data.map {prefs ->
+        context.dataStore.data.map { prefs ->
             prefs[FIRST_LAUNCH] ?: true
         }
 
@@ -25,6 +24,7 @@ class AppPreferences(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs[FIRST_LAUNCH] = false
         }
-    }
 
+        println("DATASTORE UPDATED → FIRST LAUNCH = FALSE")
+    }
 }

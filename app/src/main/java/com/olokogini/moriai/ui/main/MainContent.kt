@@ -15,6 +15,7 @@ import com.olokogini.moriai.ui.main.chat.data.ChatDatabase
 import com.olokogini.moriai.ui.main.event.EventsScreen
 import com.olokogini.moriai.ui.main.profile.ProfileScreen
 import com.olokogini.moriai.ui.main.settings.SettingsScreen
+import com.olokogini.moriai.ui.main.home.HomeScreen
 
 
 @Composable
@@ -46,6 +47,7 @@ fun MainContent(
         navController = innerNavController,
         startDestination = "chat"
     ) {
+
         composable("chat"){
             ChatScreen(viewModel)
         }
