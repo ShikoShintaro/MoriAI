@@ -2,6 +2,7 @@ package com.olokogini.moriai.ui.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -61,7 +62,7 @@ fun LoginScreen(
 
             Text(
                 text = "SCHOOL AI COMPANION CHATBOT",
-                fontSize = 11.sp,
+                fontSize = 13.sp,
                 color = colors.onSurface.copy(alpha = 0.8f)
             )
 
@@ -79,21 +80,16 @@ fun LoginScreen(
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.Center
                     ) {
 
                         Text(
                             text = "LOG IN",
                             color = colors.primary,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
 
-                        TextButton(onClick = onRegister) {
-                            Text(
-                                text = "SIGN UP",
-                                color = colors.primary
-                            )
-                        }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -114,16 +110,25 @@ fun LoginScreen(
                         onValueChange = onPasswordChange,
                         placeholder = { Text("Password") },
                         modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                         shape = RoundedCornerShape(16.dp),
                         singleLine = true
                     )
 
-                    Row(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        verticalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
+
                         TextButton(onClick = onForgot) {
                             Text("Forgot Password?")
+                        }
+
+                        TextButton(onClick = onRegister) {
+                            Text(
+                                text = "Don't Have An Account? Register",
+                                color = colors.primary
+                            )
                         }
                     }
 
@@ -131,6 +136,7 @@ fun LoginScreen(
 
                     Button(
                         onClick = onLoginClick,
+                        enabled = !state.isLoading,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),

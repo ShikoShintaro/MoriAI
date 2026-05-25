@@ -10,13 +10,14 @@ import com.olokogini.moriai.api.LoginRequest
 import com.olokogini.moriai.api.RetroFitClient
 import kotlinx.coroutines.launch
 
-class LoginViewModel (
-    private val context : Context
+class LoginViewModel(
+    private val context: Context
 ) : ViewModel() {
+
     var state by mutableStateOf(LoginUiState())
         private set
 
-    fun onEmailChange(value : String) {
+    fun onEmailChange(value: String) {
         state = state.copy(email = value)
     }
 
@@ -24,9 +25,11 @@ class LoginViewModel (
         state = state.copy(password = value)
     }
 
-    fun login(onSuccess : () -> Unit) {
+    fun login(onSuccess: () -> Unit) {
 
         viewModelScope.launch {
+
+            state = state.copy(isLoading = true, message = "")
 
             try {
                 val response = RetroFitClient.api.login(
@@ -36,31 +39,50 @@ class LoginViewModel (
                     )
                 )
 
-                if (response.isSuccessful && response.body() != null) {
-                    val emailFromApi = response.body()?.email ?: ""
+                if (response.isSuccessful) {
 
-                    val prefs = context.getSharedPreferences(
-                        "user_prefs",
-                        Context.MODE_PRIVATE
-                    )
+                    val body = response.body()
 
-                    prefs.edit()
-                        .putBoolean("is_logged_in", true)
-                        .putString("email", emailFromApi)
-                        .apply()
+                    if (body?.message == "Login Success") {
 
-                    state = state.copy(message = "Login Success")
+                        val emailFromApi = body.email ?: ""
 
-                    onSuccess()
+                        context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                            .edit()
+                            .putBoolean("is_logged_in", true)
+                            .putString("email", emailFromApi)
+                            .apply()
+
+                        state = state.copy(
+                            isLoading = false,
+                            message = "Login Success"
+                        )
+
+                        onSuccess()
+
+                    } else {
+                        state = state.copy(
+                            isLoading = false,
+                            message = body?.message ?: "Login failed"
+                        )
+                    }
+
                 } else {
-                    state = state.copy(message = "Login Failed")
+
+                    val errorMsg = response.errorBody()?.string()
+
+                    state = state.copy(
+                        isLoading = false,
+                        message = errorMsg ?: "Login Failed"
+                    )
                 }
 
             } catch (e: Exception) {
-                state = state.copy(message = "Error : ${e.message}")
+                state = state.copy(
+                    isLoading = false,
+                    message = "Network Error: ${e.message}"
+                )
             }
-
         }
     }
-
 }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
 import com.olokogini.moriai.ui.login.LoginUiState
 import com.olokogini.moriai.ui.bootstrap.BootstrapScreen
+import com.olokogini.moriai.ui.login.LoginViewModel
 import com.olokogini.moriai.ui.main.home.HomeScreen
 
 @Composable
@@ -56,26 +57,27 @@ fun AppNavigation(startDestination: String) {
 
         composable("login") {
 
-            val loginState = remember { mutableStateOf(LoginUiState()) }
+            val viewModel = remember { LoginViewModel(context) }
 
             LoginScreen(
-                state = loginState.value,
-                onEmailChange = {
-                    loginState.value = loginState.value.copy(email = it)
-                },
-                onPasswordChange = {
-                    loginState.value = loginState.value.copy(password = it)
-                },
-                onLoginClick = {
-                    userPrefs.edit()
-                        .putBoolean("is_logged_in", true)
-                        .apply()
+                state = viewModel.state,
 
-                    navController.navigate("chat") {
-                        popUpTo("login") { inclusive = true }
-                        launchSingleTop = true
+                onEmailChange = viewModel::onEmailChange,
+                onPasswordChange = viewModel::onPasswordChange,
+
+                onLoginClick = {
+                    viewModel.login {
+                        userPrefs.edit()
+                            .putBoolean("is_logged_in", true)
+                            .apply()
+
+                        navController.navigate("chat") {
+                            popUpTo("login") { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 },
+
                 onRegister = { navController.navigate("register") },
                 onForgot = { navController.navigate("forgot_password") }
             )

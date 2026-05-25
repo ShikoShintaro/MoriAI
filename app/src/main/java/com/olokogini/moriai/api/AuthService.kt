@@ -47,6 +47,7 @@ data class StudentInfoRequest (
 )
 
 data class ApiResponse(
+    val success: Boolean,
     val message: String,
     val email: String? = null
 )
