@@ -51,6 +51,7 @@ class LoginViewModel(
                             .edit()
                             .putBoolean("is_logged_in", true)
                             .putString("email", emailFromApi)
+                            .putString("saved_password", state.password)
                             .apply()
 
                         state = state.copy(

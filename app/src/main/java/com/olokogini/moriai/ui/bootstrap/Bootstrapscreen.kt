@@ -23,7 +23,7 @@ fun BootstrapScreen(navController: NavHostController) {
         println("IS LOGGED IN = $isLoggedIn")
 
         val destination = when {
-            isLoggedIn -> "home"
+            isLoggedIn -> "login_check"
             isFirstLaunch -> "intro"
             else -> "login"
         }

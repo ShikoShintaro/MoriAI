@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
 import com.olokogini.moriai.ui.login.LoginUiState
 import com.olokogini.moriai.ui.bootstrap.BootstrapScreen
+import com.olokogini.moriai.ui.bootstrap.LoginCheckScreen
 import com.olokogini.moriai.ui.login.LoginViewModel
 import com.olokogini.moriai.ui.main.home.HomeScreen
 
@@ -67,11 +68,7 @@ fun AppNavigation(startDestination: String) {
 
                 onLoginClick = {
                     viewModel.login {
-                        userPrefs.edit()
-                            .putBoolean("is_logged_in", true)
-                            .apply()
-
-                        navController.navigate("chat") {
+                        navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                             launchSingleTop = true
                         }
@@ -85,6 +82,10 @@ fun AppNavigation(startDestination: String) {
 
         composable("bootstrap") {
             BootstrapScreen(navController)
+        }
+
+        composable("login_check") {
+            LoginCheckScreen(navController)
         }
 
         composable("home") {
