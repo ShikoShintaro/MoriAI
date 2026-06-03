@@ -1,21 +1,67 @@
 package com.olokogini.moriai.ui.main.home
 
+import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import com.olokogini.moriai.api.ProfileResponse
+import com.olokogini.moriai.ui.main.profile.ProfileGetHelper
 
 @Composable
 fun HomeScreen(
     innerNavController: NavHostController
 ) {
+
+    val context = LocalContext.current
+
+    val prefs = remember {
+        context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    }
+
+    val userEmail = prefs.getString("email", "") ?: ""
+
+    var fullName by remember { mutableStateOf("") }
+    val hasLoaded = remember { mutableStateOf(false) }
+
+    // fallback from cache
+    val cachedName = prefs.getString("username", "Student") ?: "Student"
+
+    val username = fullName.ifBlank { cachedName }
+
+    if (userEmail.isNotEmpty() && !hasLoaded.value) {
+        hasLoaded.value = true
+
+        ProfileGetHelper.getProfile(
+            userEmail,
+            object : ProfileGetHelper.CallbackListener {
+
+                override fun onSuccess(profile: ProfileResponse?) {
+                    if (profile != null) {
+                        fullName = profile.fullName ?: ""
+
+                        // optional: cache it for offline use
+                        prefs.edit()
+                            .putString("username", profile.fullName ?: "")
+                            .apply()
+                    }
+                }
+
+                override fun onError(error: String) {
+                    println("HOME PROFILE ERROR: $error")
+                }
+            }
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         HomeBackground()
@@ -42,7 +88,7 @@ fun HomeScreen(
 
             Column {
                 Text(
-                    text = "Welcome back, Shiko",
+                    text = "Welcome back, $username",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFBFFBFF)

@@ -44,7 +44,7 @@ fun LoginCheckScreen(navController: NavHostController) {
                 if (response.isSuccessful &&
                     response.body()?.message == "Login Success"
                 ) {
-                    navController.navigate("chat") {
+                    navController.navigate("home") {
                         popUpTo(0)
                     }
                     return@LaunchedEffect
