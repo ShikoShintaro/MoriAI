@@ -74,6 +74,11 @@ data class UploadResponse(
     val imageUrl: String
 )
 
+data class RegisterResponse(
+    val message : String,
+    val status : String? = null
+)
+
 
 interface AuthService{
 
@@ -90,7 +95,7 @@ interface AuthService{
     @POST("auth/register")
     suspend fun register(
         @Body request: RegisterRequest
-    ): Response<ApiResponse>
+    ): Response<RegisterResponse>
 
     @POST("auth/forgot-password")
     suspend fun forgotPassword(
@@ -127,5 +132,6 @@ interface AuthService{
     fun uploadImage(
         @Part image: MultipartBody.Part
     ): Call<UploadResponse>
+
 
 }

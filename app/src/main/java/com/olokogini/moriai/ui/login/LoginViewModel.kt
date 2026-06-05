@@ -1,9 +1,9 @@
 package com.olokogini.moriai.ui.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import android.content.Context
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.olokogini.moriai.api.LoginRequest
@@ -29,9 +29,22 @@ class LoginViewModel(
 
         viewModelScope.launch {
 
-            state = state.copy(isLoading = true, message = "")
+            state = state.copy(
+                isLoading = true,
+                message = "",
+                isSuccess = false
+            )
+
+            if (state.email.isBlank() || state.password.isBlank()) {
+                state = state.copy (
+                    isLoading = false,
+                    message = "Please enter email and password."
+                )
+                return@launch
+            }
 
             try {
+
                 val response = RetroFitClient.api.login(
                     LoginRequest(
                         email = state.email.trim(),
@@ -56,7 +69,8 @@ class LoginViewModel(
 
                         state = state.copy(
                             isLoading = false,
-                            message = "Login Success"
+                            isSuccess = true,
+                            message = ""
                         )
 
                         onSuccess()
@@ -64,7 +78,8 @@ class LoginViewModel(
                     } else {
                         state = state.copy(
                             isLoading = false,
-                            message = body?.message ?: "Login failed"
+                            isSuccess = false,
+                            message = body?.message ?: "Invalid credentials"
                         )
                     }
 
@@ -74,14 +89,15 @@ class LoginViewModel(
 
                     state = state.copy(
                         isLoading = false,
-                        message = errorMsg ?: "Login Failed"
+                        message = errorMsg ?: "Server error occurred"
                     )
                 }
 
             } catch (e: Exception) {
+
                 state = state.copy(
                     isLoading = false,
-                    message = "Network Error: ${e.message}"
+                    message = "Network error: ${e.message}"
                 )
             }
         }

@@ -18,11 +18,15 @@ import com.olokogini.moriai.ui.otp.ResetOtpScreen
 import com.olokogini.moriai.ui.student.StudentInfoScreen
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.olokogini.moriai.ui.login.LoginUiState
 import com.olokogini.moriai.ui.bootstrap.BootstrapScreen
 import com.olokogini.moriai.ui.bootstrap.LoginCheckScreen
 import com.olokogini.moriai.ui.login.LoginViewModel
 import com.olokogini.moriai.ui.main.home.HomeScreen
+import com.olokogini.moriai.ui.main.profile.ProfileScreen
+import com.olokogini.moriai.ui.main.settings.SettingsScreen
+import com.olokogini.moriai.ui.register.RegisterViewModel
 
 @Composable
 fun AppNavigation(startDestination: String) {
@@ -92,12 +96,25 @@ fun AppNavigation(startDestination: String) {
             HomeScreen(navController)
         }
 
+        composable("settings") {
+            SettingsScreen()
+        }
+
+        composable("profile"){
+            ProfileScreen()
+        }
+
         composable("chat") {
             MainScreen(navController)
         }
 
         composable("register") {
-            RegisterScreen(navController)
+            val viewModel = remember {
+                RegisterViewModel()
+            }
+
+            RegisterScreen(navController, viewModel)
+
         }
 
         composable("forgot_password") {
