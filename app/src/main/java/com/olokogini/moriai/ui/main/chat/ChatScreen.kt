@@ -16,10 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.olokogini.moriai.ui.main.chat.viewmodel.ChatViewModel
+import androidx.compose.material.icons.filled.*
+import androidx.navigation.NavController
+import android.R.attr.contentDescription
 
 @Composable
 fun ChatScreen(
-    viewModel: ChatViewModel
+    viewModel: ChatViewModel, navController: NavController
 ) {
 
     val messages by viewModel.messages.collectAsState(initial = emptyList())
@@ -31,6 +34,29 @@ fun ChatScreen(
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.lastIndex)
+        }
+    }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    val navBackStackEntry = remember { navController.currentBackStackEntry }
+
+    val clearChatState =
+        navBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow("clear_chat", false)
+
+    val shouldClear by clearChatState
+        ?.collectAsState(initial = false)
+        ?: remember { mutableStateOf(false) }
+
+    LaunchedEffect(shouldClear) {
+        if (shouldClear) {
+            viewModel.clearChat()
+
+            navBackStackEntry
+                ?.savedStateHandle
+                ?.set("clear_chat", false)
         }
     }
 
@@ -118,5 +144,31 @@ fun ChatScreen(
                 }
             }
         }
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.clearChat()
+                    showDialog = false
+                }) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDialog = false
+                }) {
+                    Text("Cancel")
+                }
+            },
+            title = {
+                Text("Delete chat?")
+            },
+            text = {
+                Text("This will permanently clear all messages.")
+            }
+        )
     }
 }

@@ -16,11 +16,13 @@ import androidx.compose.ui.platform.LocalContext
 import com.olokogini.moriai.api.ProfileResponse
 import androidx.compose.foundation.background
 import androidx.navigation.NavHostController
-
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.UpdateProfileRequest
-
 import kotlinx.coroutines.launch
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageOptions
 
 
 
@@ -40,42 +42,41 @@ fun ProfileScreen( navController : NavHostController ) {
     val userEmail = prefs.getString("email", "") ?: ""
     val hasLoaded = remember { mutableStateOf(false) }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    val cropLauncher = rememberLauncherForActivityResult(
+        contract = CropImageContract()
+    ) { result ->
+        if (result.isSuccessful) {
+            val uri = result.uriContent
 
-        if (uri != null) {
+            if (uri != null) {
+                ProfileUploadHelper.uploadImage(
+                    context,
+                    uri,
+                    object : ProfileUploadHelper.UploadCallback {
+                        override fun onSuccess(uploadedUrl : String) {
+                            scope.launch {
+                                try {
+                                    val response = RetroFitClient.api.updateProfileImage(
+                                        UpdateProfileRequest(userEmail, uploadedUrl)
+                                    )
 
-            ProfileUploadHelper.uploadImage(
-                context,
-                uri,
-                object : ProfileUploadHelper.UploadCallback {
-
-                    override fun onSuccess(uploadedUrl: String) {
-                        scope.launch {
-                            try {
-                                val response = RetroFitClient.api.updateProfileImage(
-                                    UpdateProfileRequest(userEmail, uploadedUrl)
-                                )
-
-                                if (response.isSuccessful) {
-                                    println("Saved to DB")
-                                } else {
-                                    println("Save failed")
+                                    if (response.isSuccessful) {
+                                        println("Saved to DB")
+                                    } else {
+                                        println("Save Failed")
+                                    }
+                                } catch (e: Exception) {
+                                    println("Error : ${e.message}")
                                 }
-
-                            } catch (e: Exception) {
-                                println("Error: ${e.message}")
                             }
+                            imageUrl = uploadedUrl
                         }
-                        imageUrl = uploadedUrl
+                        override fun onError(error: String) {
+                            println("Upload error: $error")
+                        }
                     }
-
-                    override fun onError(error: String) {
-                        println("Upload error: $error")
-                    }
-                }
-            )
+                )
+            }
         }
     }
 
@@ -182,7 +183,18 @@ fun ProfileScreen( navController : NavHostController ) {
         ) {
 
             Button(
-                onClick = { launcher.launch("image/*") },
+                onClick = {
+                    cropLauncher.launch(
+                        CropImageContractOptions(
+                            null,
+                            CropImageOptions(
+                                aspectRatioX = 1,
+                                aspectRatioY = 1,
+                                fixAspectRatio = true
+                            )
+                        )
+                    )
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Change Photo")

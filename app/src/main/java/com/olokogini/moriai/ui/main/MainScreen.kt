@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -326,7 +327,7 @@ fun MainScreen(
 
             topBar = {
 
-                TopAppBar(
+                TopAppBar (
 
                     colors = TopAppBarDefaults.topAppBarColors(
 
@@ -403,6 +404,25 @@ fun MainScreen(
                                         contentDescription = null
                                     )
                                 }
+                            }
+                        }
+                    },
+
+                    actions = {
+
+                        if (currentRoute == "chat") {
+
+                            IconButton(
+                                onClick = {
+                                    innerNavController.currentBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("clear_chat", true)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Clear Chat"
+                                )
                             }
                         }
                     }

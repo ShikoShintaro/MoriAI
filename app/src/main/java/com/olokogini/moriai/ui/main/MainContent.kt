@@ -54,7 +54,7 @@ fun MainContent(
         }
 
         composable("chat"){
-            ChatScreen(viewModel)
+            ChatScreen(viewModel = viewModel, navController = innerNavController)
         }
 
         composable("profile"){

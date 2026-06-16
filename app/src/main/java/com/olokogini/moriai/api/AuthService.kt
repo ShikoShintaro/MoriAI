@@ -117,6 +117,11 @@ interface AuthService{
         @Body request: StudentInfoRequest
     ): Response<ApiResponse>
 
+    @POST("auth/student-info")
+    suspend fun updateStudentInfo(
+        @Body request: StudentInfoRequest
+    ): Response<Any>
+
     @POST("auth/update-profile-image")
     suspend fun updateProfileImage(
         @Body request : UpdateProfileRequest

@@ -35,4 +35,10 @@ class ChatViewModel(
             repo.sendMessage(text)
         }
     }
+
+    fun clearChat() {
+        viewModelScope.launch {
+            repo.clearChat()
+        }
+    }
 }
