@@ -24,6 +24,7 @@ import com.olokogini.moriai.ui.bootstrap.BootstrapScreen
 import com.olokogini.moriai.ui.bootstrap.LoginCheckScreen
 import com.olokogini.moriai.ui.login.LoginViewModel
 import com.olokogini.moriai.ui.main.home.HomeScreen
+import com.olokogini.moriai.ui.main.profile.ProfileEditScreen
 import com.olokogini.moriai.ui.main.profile.ProfileScreen
 import com.olokogini.moriai.ui.main.settings.SettingsScreen
 import com.olokogini.moriai.ui.register.RegisterViewModel
@@ -84,6 +85,10 @@ fun AppNavigation(startDestination: String) {
             )
         }
 
+        composable("edit_profile") {
+            ProfileEditScreen(navController)
+        }
+
         composable("bootstrap") {
             BootstrapScreen(navController)
         }
@@ -101,7 +106,7 @@ fun AppNavigation(startDestination: String) {
         }
 
         composable("profile"){
-            ProfileScreen()
+            ProfileScreen(navController)
         }
 
         composable("chat") {

@@ -15,6 +15,7 @@ import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
 import com.olokogini.moriai.api.ProfileResponse
 import androidx.compose.foundation.background
+import androidx.navigation.NavHostController
 
 import com.olokogini.moriai.api.RetroFitClient
 import com.olokogini.moriai.api.UpdateProfileRequest
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen( navController : NavHostController ) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -187,8 +188,10 @@ fun ProfileScreen() {
                 Text("Change Photo")
             }
 
-            OutlinedButton(
-                onClick = { /* future edit profile */ },
+            Button(
+                onClick = {
+                    navController.navigate("edit_profile")
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Edit Profile")

@@ -16,6 +16,7 @@ import com.olokogini.moriai.ui.main.event.EventsScreen
 import com.olokogini.moriai.ui.main.profile.ProfileScreen
 import com.olokogini.moriai.ui.main.settings.SettingsScreen
 import com.olokogini.moriai.ui.main.home.HomeScreen
+import com.olokogini.moriai.ui.main.profile.ProfileEditScreen
 
 
 @Composable
@@ -48,12 +49,16 @@ fun MainContent(
         startDestination = "chat"
     ) {
 
+        composable("edit_profile") {
+            ProfileEditScreen(innerNavController)
+        }
+
         composable("chat"){
             ChatScreen(viewModel)
         }
 
         composable("profile"){
-            ProfileScreen()
+            ProfileScreen(innerNavController)
         }
 
         composable("settings") {
