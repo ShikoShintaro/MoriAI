@@ -3,6 +3,7 @@ package com.olokogini.moriai.api
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.GET
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart
 import retrofit2.http.Part
@@ -79,6 +80,20 @@ data class RegisterResponse(
     val status : String? = null
 )
 
+data class Event(
+    val _id : String,
+    val title : String,
+    val message : String,
+    val topic : String,
+    val priority : String,
+    val createdAt : String
+)
+
+data class EventsResponse (
+    val success : Boolean,
+    val events : List<Event>
+)
+
 
 interface AuthService{
 
@@ -137,6 +152,10 @@ interface AuthService{
     fun uploadImage(
         @Part image: MultipartBody.Part
     ): Call<UploadResponse>
+
+    @GET("notifications/latest")
+    suspend fun getLatestEvents(): Response<EventsResponse>
+
 
 
 }
