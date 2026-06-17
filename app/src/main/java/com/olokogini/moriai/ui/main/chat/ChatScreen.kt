@@ -16,9 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import com.olokogini.moriai.ui.main.chat.viewmodel.ChatViewModel
-import androidx.compose.material.icons.filled.*
 import androidx.navigation.NavController
-import android.R.attr.contentDescription
 
 @Composable
 fun ChatScreen(
