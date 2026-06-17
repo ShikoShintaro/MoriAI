@@ -12,11 +12,25 @@ import androidx.compose.ui.Modifier
 import com.olokogini.moriai.navigation.AppNavigation
 import com.olokogini.moriai.ui.main.settings.SettingsHelper
 import com.olokogini.moriai.ui.theme.MoriAITheme
+import android.Manifest
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import java.util.concurrent.TimeUnit
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.olokogini.moriai.ui.main.event.EventWorker
+import androidx.work.Constraints
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        createNotificationChannel(this)
 
         val darkMode = SettingsHelper.getDarkMode(this)
 
@@ -24,6 +38,24 @@ class MainActivity : ComponentActivity() {
             if (darkMode) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
         )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!granted) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+
+        }
+
+        startEventWorker(this)
 
         setContent {
             MoriAITheme(darkTheme = darkMode) {
@@ -40,6 +72,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun createNotificationChannel(context: Context) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val channel = android.app.NotificationChannel(
+                "mori_events",
+                "MORI Notifications",
+                android.app.NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Mori AI Event Notifications"
+            }
+
+            val manager = context.getSystemService(android.app.NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+
+        }
+    }
+
     private fun getStartDestination(context: Context): String {
         val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
@@ -52,4 +100,24 @@ class MainActivity : ComponentActivity() {
             else -> "login"
         }
     }
+
+    private fun startEventWorker(context: Context) {
+
+        val workRequest = PeriodicWorkRequestBuilder<EventWorker>(
+            15, TimeUnit.MINUTES
+        )
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .build()
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "mori_event_worker",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
+    }
+
 }
