@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Announcement
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -23,9 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import coil.compose.AsyncImage
 import com.olokogini.moriai.api.ProfileResponse
+import com.olokogini.moriai.ui.main.announcements.EventPoller
 import com.olokogini.moriai.ui.main.profile.ProfileGetHelper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,7 +86,15 @@ fun MainScreen(
                 }
             )
         }
+
+        while (true) {
+            EventPoller.checkForNewEvents(context)
+
+            delay(10000)
+        }
+
     }
+
 
     ModalNavigationDrawer(
 
@@ -263,6 +275,48 @@ fun MainScreen(
                                 MaterialTheme.colorScheme.primary
                         ),
 
+                        modifier = Modifier.padding(vertical = 5.dp)
+                    )
+
+                    NavigationDrawerItem(
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Announcement,
+                                contentDescription = null
+                            )
+                        },
+
+                        label = {
+                            Column {
+                                Text("Announcements")
+
+                                Text(
+                                    text = "School updates & notices",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                )
+                            }
+                        },
+
+                        selected = currentRoute == "announcements",
+
+                        onClick = {
+                            scope.launch {drawerState.close() }
+                            innerNavController.navigate("announcements")
+                        },
+
+                        shape = RoundedCornerShape(18.dp),
+
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor =
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+
+                            selectedTextColor =
+                                MaterialTheme.colorScheme.primary,
+
+                            selectedIconColor =
+                                MaterialTheme.colorScheme.primary
+                        ),
                         modifier = Modifier.padding(vertical = 5.dp)
                     )
 
