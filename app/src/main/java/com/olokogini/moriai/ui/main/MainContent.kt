@@ -17,6 +17,7 @@ import com.olokogini.moriai.ui.main.profile.ProfileScreen
 import com.olokogini.moriai.ui.main.settings.SettingsScreen
 import com.olokogini.moriai.ui.main.home.HomeScreen
 import com.olokogini.moriai.ui.main.profile.ProfileEditScreen
+import com.olokogini.moriai.ui.main.announcements.AnnouncementScreen
 
 
 @Composable
@@ -67,6 +68,10 @@ fun MainContent(
 
         composable("events") {
             EventsScreen()
+        }
+
+        composable("announcements") {
+            AnnouncementScreen()
         }
     }
 
