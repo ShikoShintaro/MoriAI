@@ -1,4 +1,4 @@
-# MoriAI — AI Companion System (WIP)
+# MoriAI — AI Companion System (FINISHED)
 
 ## Overview
 
